@@ -38,37 +38,56 @@ Some things we might need to consider and should not forget when the time comes 
 
 ## Development
 
-### [Frontend](/frontend/) Team
+```shell
+git clone https://github.com/Randall-Scharpf/too-many-emails.git
+cd too-many-emails
+# Create your branch
+git checkout -b your-branch-name
+```
+
+<table>
+<tr>
+  <th>Frontend Team</th>
+  <th>Backend Team</th>
+</tr>
+<tr>
+<td>
 
 ```shell
 cd frontend
-npm install  # if it's your first time
-```
-
-<!-- TODO -->
-
-⚠️ Add any instructions or reminders here.
-
-<!-- TODO -->
-
-
-### [Backend](/backend/) Team
-
-```shell
-cd backend
-npm install  # if it's your first time
-```
-
-To run the application, invoke the [entry point](backend/dist/index.js) with [this script](backend/package.json#L8):
-
-```shell
+npm install
+# Run application on localhost:3000
 npm start
 ```
 
-In favor of static type-checking, we will write our source code in [`src/*.ts`](backend/src/) files, which can then be compiled to [`dist/*.js`](backend/dist/) files with `npx tsc`. Alternatively, to automatically compile source files on save, run [this script](backend/package.json#L7) in a spare terminal:
+</td>
+<td>
 
 ```shell
+cd backend
+npm install
+# Enable live TypeScript compiler
 npm run dev
+# Start the runtime
+npm start
 ```
 
-We can edit the [TypeScript configuration file](backend/tsconfig.json) if we decide to update our TypeScript compiler preferences.
+</td>
+</tr>
+</table>
+
+
+### Frontend Notes
+
+<!-- TODO -->
+
+⚠️ Add any instructions or reminders for yourselves here.
+
+<!-- TODO -->
+
+
+### Backend Notes
+
+- In favor of static type-checking, we will write the source code in TypeScript files under the [src/](backend/src/) directory.
+- Using `npx tsc` for manual compilation or [`npm run dev`](backend/package.json#L7) to compile on save, the TS files are generated in the [dist/](backend/dist/) directory.
+- We can edit the [TypeScript configuration file](backend/tsconfig.json) if we decide to update our TypeScript compiler preferences.
