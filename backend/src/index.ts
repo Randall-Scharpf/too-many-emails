@@ -1,23 +1,17 @@
 // index.ts
 
-require("./endpoints")
+// Or consider using node -r dotenv/config dist/index.js
+import * as dotenv from 'dotenv';
 
-interface Message {
-  content: string,
-  times: number,
+// Load any environment variables from .env file or shell
+dotenv.config()
+
+/**
+ * Start the server runtime.
+ */
+async function main() {
+  console.log("Starting the server runtime...");
+  /* TODO */
 }
 
-function repeatHello(message: Message): void {
-  const { content, times } = message;
-  for (let i = 0; i < times; i++)
-    console.log(content);
-}
-
-repeatHello({
-  content: "hello world",
-  times: 5,
-});
-
-// Required for TS to treat this file as a module
-// Prevents 'cannot redeclare block-scoped variable' errors
-export { };
+main().catch(console.error);
