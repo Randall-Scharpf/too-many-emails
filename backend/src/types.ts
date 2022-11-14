@@ -4,7 +4,7 @@
 export interface Email {
   /**
    * Email address of the sender.  It can be in the format 'username@domain.com'
-   * or with a (Unicode supported) name 'Name Here \<username@domain.com\>'.
+   * or with a (Unicode supported) name '"Name Here" username@domain.com'.
   */
   from: string,
   /**
