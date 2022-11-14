@@ -1,5 +1,6 @@
 // index.ts
-// Sanity check for repository initialization
+
+require("./endpoints")
 
 interface Message {
   content: string,
@@ -20,4 +21,3 @@ repeatHello({
 // Required for TS to treat this file as a module
 // Prevents 'cannot redeclare block-scoped variable' errors
 export { };
-
