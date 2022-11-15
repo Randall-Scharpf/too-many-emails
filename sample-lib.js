@@ -1,5 +1,5 @@
 const http = require('http');
-const SERVER_URL = '172.28.246.199';
+const SERVER_URL = 'localhost';
 
 function getFromServer(endpoint, data, resCallback, errCallback = () => {}) {
     data = new URLSearchParams(data).toString();

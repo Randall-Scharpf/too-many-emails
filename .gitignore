@@ -109,3 +109,6 @@ dist
 
 # Universal exception
 !.gitkeep
+
+# sqlite db files
+*/.data

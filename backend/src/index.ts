@@ -11,6 +11,7 @@ dotenv.config()
  */
 async function main() {
   console.log("Starting the server runtime...");
+  require('./endpoints')
   /* TODO */
 }
 
