@@ -66,9 +66,10 @@ npm start
 ```shell
 cd backend
 npm install
-# Enable live TypeScript compiler
+# Enable live TypeScript compiler in one shell
 npm run dev
-# Start the runtime
+# Start the runtime in another shell
+# nodemon will automatically restart the server on changes
 npm start
 ```
 
@@ -89,5 +90,6 @@ npm start
 ### Backend Notes
 
 - In favor of static type-checking, we will write the source code in TypeScript files under the [src/](backend/src/) directory.
-- Using `npx tsc` for manual compilation or [`npm run dev`](backend/package.json#L7) to compile on save, the TS files are generated in the [dist/](backend/dist/) directory.
+- Using `npx tsc` for manual compilation or [`npm run dev`](backend/package.json#L7) to compile on save, the TS files are generated in the `.gitignore`d dist directory.
 - We can edit the [TypeScript configuration file](backend/tsconfig.json) if we decide to update our TypeScript compiler preferences.
+- Use the `npm start` script to start the server runtime. I use the [nodemon](https://www.npmjs.com/package/nodemon) development dependency to watch the compiled JavaScript files and automatically restart the server upon changes.
