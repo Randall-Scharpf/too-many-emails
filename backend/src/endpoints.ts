@@ -3,7 +3,7 @@
 
 import express from 'express';
 import * as db from './db';
-import { getLog } from './logging';
+import { getLog, repr } from './logging';
 
 const log = getLog(__filename);
 export const server = express();
@@ -20,12 +20,12 @@ server.use(express.urlencoded({ extended: false }));
 /* Sanity check endpoints */
 
 server.get("/echo-get", (req, res) => {
-    log(`Request URL: ${req.url}`);
+    log(`Request Endpoint URL: ${req.url}`);
     res.json(req.query);
 })
 
 server.post("/echo-post", (req, res) => {
-    log(`Request URL: ${req.url}`);
+    log(`Request Endpoint URL: ${req.url}`);
     res.json(req.body);
 })
 
@@ -33,20 +33,19 @@ server.post("/echo-post", (req, res) => {
 
 server.post("/db-post", (req, res) => {
     if (req.body.value !== undefined) {
-        log("Writing", req.body.key, req.body.value);
+        log(`Writing key=${repr(req.body.key)}, value=${repr(req.body.value)}`);
         db.writeKv(req.body.key, req.body.value);
         res.json({ key: req.body.key, value: req.body.value });
     }
     else {
-        console.group("Reading", req.body.key);
-        db.readKv(req.body.key, (val: string | undefined, err: string | undefined) => {
-            log("Got", val, err);
+        log(`Reading key=${repr(req.body.key)}, value=${repr(req.body.value)}`);
+        db.readKv(req.body.key, (val: string | undefined, err: string | null) => {
+            log(`Got val=${repr(val)}, err=${repr(err)}`);
             if (val) {
                 res.json({ key: req.body.key, value: val });
             } else {
-                res.status(400).send("Key not found!");
+                res.status(400).send("400: Key not found!");
             }
         });
-        console.groupEnd();
     }
 });

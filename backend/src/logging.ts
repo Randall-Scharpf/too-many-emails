@@ -27,3 +27,10 @@ export function getLog(filename: string): Function {
         );
     };
 }
+
+/**
+ * Return a more debugging-friendly representation of an object.
+ */
+export function repr(object: any): string {
+    return JSON.stringify(object);
+}
