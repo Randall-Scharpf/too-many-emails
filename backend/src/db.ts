@@ -1,47 +1,35 @@
-// db.ts
-// Handler for database operators.
-
-import * as fs from 'node:fs';
-import * as sqlite3 from 'sqlite3';
-
-const DB_FILE = process.env.DB_FILE || "./.data/sqlite.db";
-
-/* Ensure paths */
+const dbFile = "./.data/sqlite.db";
+const fs = require("fs");
+const exists = fs.existsSync(dbFile);
 if (!fs.existsSync("./.data")) {
     fs.mkdirSync("./.data");
 }
-const exists = fs.existsSync(DB_FILE);
 if (!exists) {
-    fs.openSync(DB_FILE, 'w');
+    fs.openSync(dbFile, 'w');
 }
-const sqlite = sqlite3.verbose();
-const db = new sqlite.Database(DB_FILE);
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database(dbFile);
 
 db.serialize(() => {
     if (!exists) {
         db.run(
             "CREATE TABLE KeyValue (key TEXT, value TEXT)"
         );
-        // console.log("New table KeyValue created!");
     }
+    require("./auth").initAuthDb(db, !exists);
 });
 
 db.each("SELECT * FROM KeyValue", (err, row) => {
     // console.log(row);
 });
 
-
-/*========================*/
-/* Database API Functions */
-/*========================*/
-
-export function writeKv(key: string, value: string): void {
+export function writeKv(key: string, value: string) : void {
     db.run("DELETE FROM KeyValue WHERE key = ?", [key]);
     db.run("INSERT INTO KeyValue VALUES (?, ?)", [key, value]);
 }
 
-export function readKv(key: string, callback: (val: string | undefined, err: string | undefined) => void): void {
-    db.all("SELECT * FROM KeyValue WHERE key = ?", [key], (err: string, rows) => {
+export function readKv(key: string, callback: (val: string | undefined, err: string | undefined) => void) : void {
+    db.all("SELECT * FROM KeyValue WHERE key = ?", [key], (err, rows) => {
         // console.log(rows);
         if (rows.length > 0) {
             callback(rows[0].value, undefined);
