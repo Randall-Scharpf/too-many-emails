@@ -49,3 +49,5 @@ server.post("/db-post", (req, res) => {
         });
     }
 });
+
+require("./auth").initAuthEndpoints(server);

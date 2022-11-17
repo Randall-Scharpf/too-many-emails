@@ -8,15 +8,16 @@ import { getLog } from './logging';
 const log = getLog(__filename);
 const DB_FILE = process.env.DB_FILE || "./.data/sqlite.db";
 
+const exists = fs.existsSync(DB_FILE);
+
 /* Ensure paths */
 if (!fs.existsSync("./.data")) {
     fs.mkdirSync("./.data");
 }
-const exists = fs.existsSync(DB_FILE);
 if (!exists) {
     fs.openSync(DB_FILE, 'w');
 }
-const sqlite = sqlite3.verbose();
+const sqlite = require("sqlite3").verbose();
 const db = new sqlite.Database(DB_FILE);
 
 db.serialize(() => {
@@ -26,18 +27,14 @@ db.serialize(() => {
         );
         log("New table KeyValue created!");
     }
+    require("./auth").initAuthDb(db, !exists);
 });
 
 db.each("SELECT * FROM KeyValue", (err, row) => {
     log(row);
 });
 
-
-/*========================*/
-/* Database API Functions */
-/*========================*/
-
-export function writeKv(key: string, value: string): void {
+export function writeKv(key: string, value: string) : void {
     db.run("DELETE FROM KeyValue WHERE key = ?", [key]);
     db.run("INSERT INTO KeyValue VALUES (?, ?)", [key, value]);
 }
