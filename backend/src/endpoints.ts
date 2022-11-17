@@ -1,9 +1,18 @@
 import express from 'express';
+import * as db from './db';
 
-const server = express();
+export const server = express();
 
+/* Register middleware */
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
+
+
+/*==================*/
+/* Define Endpoints */
+/*==================*/
+
+/* Sanity check endpoints */
 
 server.get("/echo-get", (req, res) => {
     res.json(req.query);
@@ -15,7 +24,8 @@ server.post("/echo-post", (req, res) => {
     console.log(req.url);
 })
 
-const db = require('./db');
+/* Database test endpoint */
+
 server.post("/db-post", (req, res) => {
     if (req.body.value !== undefined) {
         console.log("writing", req.body.key, req.body.value);
@@ -26,8 +36,4 @@ server.post("/db-post", (req, res) => {
         console.log("reading", req.body.key);
         db.readKv(req.body.key, (v) => res.json({ key: req.body.key, value: v }));
     }
-})
-
-server.listen(80);
-
-export { }
+});
