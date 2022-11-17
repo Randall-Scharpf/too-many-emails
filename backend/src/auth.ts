@@ -12,7 +12,7 @@ export function initAuthDb(db, maketables : boolean) {
             "CREATE TABLE Users (email TEXT, salt TEXT, pwhash TEXT)"
         );
         db.run(
-            "CREATE TABLE Tokens (email TEXT, salt TEXT, tokenhash TEXT)"
+            "CREATE TABLE Tokens (email TEXT, token TEXT, expiry INTEGER)"
         );
     }
     auth_db = db;
@@ -47,65 +47,71 @@ async function sha_256(param: string) {
     return hashHex;
 }
 
-function makeRandom(length: number) : string {
+function makeRandom(length: number, binaryString: boolean) : string {
     var salt = "";
-    for (var v = 0; v < length; v++) salt += String.fromCharCode(crypto.randomInt(0, 256));
+    for (var v = 0; v < length; v++) {
+        let b = crypto.randomInt(0, 256);
+        salt += binaryString ? String.fromCharCode(b) : b.toString(16).padStart(2, '0');
+    }
     return salt;
 }
 
-function addUser(email: string, pw: string, callback: (param: {code: number, deets: string}) => void) {
+function addUser(email: string, pw: string, callback: (param: {code: number, message: string}) => void) {
     auth_db.all("SELECT * FROM Users WHERE email = ?", [email], async (err, rows) => {
         // console.log(rows);
         if (rows.length > 0) {
-            callback({code: 400, deets: "Email already has an account!"});
+            callback({code: 400, message: "Email already has an account!"});
         } else {
-            var salt = makeRandom(8);
+            var salt = makeRandom(8, true);
             let pwhash = await sha_256(pw + salt);
             auth_db.run("INSERT INTO Users VALUES (?, ?, ?)", [email, salt, pwhash]);
-            callback({code: 200, deets: "Success"});
+            callback({code: 200, message: "Success"});
         }
     });
 }
 
-function loginUser(email: string, pw: string, callback: (param: {code: number, deets: string}) => void) {
-    auth_db.all("SELECT * FROM Users WHERE email = ?", [email], async (err, rows) => {
-        console.log(rows);
-        if (rows.length === 0) {
-            callback({code: 400, deets: "Email/Password combination invalid!"});
+function loginUser(email: string, pw: string, callback: (param: {code: number, token: string}) => void) {
+    let EXPIRY_MILLIS = 12*60*60*1000;
+    auth_db.all("SELECT * FROM Tokens WHERE email = ?", [email], async (err, rows) => {
+        if (rows.length !== 0 && (rows[0].expiry > Date.now())) {
+            callback({code: 400, token: "Already logged in!"});
         } else {
-            let pwhash = await sha_256(pw + rows[0].salt);
-            console.log(pwhash);
-            if (pwhash !== rows[0].pwhash) {
-                callback({code: 400, deets: "Email/Password combination invalid!"});
-                return;
-            }
-            var token = makeRandom(24);
-            var salt = makeRandom(8);
-            let tokenhash = await sha_256(token + salt);
-            auth_db.run("INSERT INTO Tokens VALUES (?, ?, ?)", [email, salt, tokenhash]);
-            callback({code: 200, deets: token});
+            auth_db.run("DELETE FROM Tokens WHERE email = ?", [email]);
+            auth_db.all("SELECT * FROM Users WHERE email = ?", [email], async (err, rows) => {
+                if (rows.length === 0) {
+                    callback({code: 400, token: "Email/Password combination invalid!"});
+                } else {
+                    let pwhash = await sha_256(pw + rows[0].salt);
+                    if (pwhash !== rows[0].pwhash) {
+                        callback({code: 400, token: "Email/Password combination invalid!"});
+                        return;
+                    }
+                    var token = makeRandom(24, false);
+                    auth_db.run("INSERT INTO Tokens VALUES (?, ?, ?)", [email, token, Date.now() + EXPIRY_MILLIS]);
+                    callback({code: 200, token: token});
+                }
+            });
         }
     });
 }
 
-export function logoutUser(email: string, token: string, callback: (param: {code: number, deets: string}) => void) {
+function logoutUser(email: string, token: string, callback: (param: {code: number, message: string}) => void) {
     verifyToken(email, token, (resp) => {
         if (!resp) {
             auth_db.run("DELETE FROM Tokens WHERE email = ?", [email]);
-            resp = {code: 200, deets: "Logged out of " + email};
+            resp = {code: 200, message: "Logged out of " + email};
         }
         callback(resp);
     });
 }
 
-export function verifyToken(email: string, token: string, callback: (param: {code: number, deets: string} | undefined) => void) {
+export function verifyToken(email: string, token: string, callback: (param: {code: number, message: string} | undefined) => void) {
     auth_db.all("SELECT * FROM Tokens WHERE email = ?", [email], async (err, rows) => {
         if (rows.length === 0) {
-            callback({code: 400, deets: "Invalid token!"});
+            callback({code: 400, message: "Invalid token!"});
         } else {
-            let tokenhash = await sha_256(token + rows[0].salt);
-            if (tokenhash !== rows[0].tokenhash) {
-                callback({code: 400, deets: "Invalid token!"});
+            if (token !== rows[0].token || rows[0].expiry < Date.now()) {
+                callback({code: 400, message: "Invalid token!"});
             } else {
                 callback(undefined);
             }
