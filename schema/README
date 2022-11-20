@@ -1,0 +1,14 @@
+Hey y'all!
+
+I know there are tools like jsonschema, which can also be integrated into VS
+Code's IntelliSense, but considering the amount of time we have left, I figured
+it would be less of a logistical nightmare to just use example JSON files to
+show you what the real ones will look like as opposed to learning and imposing a
+new set of tools.
+
+The included schemas are .jsonc (JSON with comments) files so I could annotate
+them with helpful comments. This technically makes it invalid JSON which would
+require an external tool to properly parse, but that's fine because they're just
+for documentation purposes and not meant to be loaded anyway.
+
+Vincent
