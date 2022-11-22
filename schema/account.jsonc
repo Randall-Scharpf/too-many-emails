@@ -1,0 +1,31 @@
+{
+  /**
+   * string
+   *
+   * Full name of the user for display purposes.
+   */
+  "fullName": "Vincent Lin",
+  /**
+   * string
+   *
+   * Email address that the user registers with our app.
+   *
+   * This is the "parent" email that they use to log in. To avoid confusion, we
+   * shall refer such addresses as "account addresses" to distinguish them from
+   * their "owned addresses".
+   */
+  "accountAddress": "vinlin@g.ucla.edu",
+  /**
+   * Array<string>, length >= 0
+   *
+   * Set of email addresses owned by this user.
+   *
+   * I don't know how our domain thing will work yet, so I use "whatever.com"
+   * It'll probably show up as localhost or 127.0.0.1 or something.
+   */
+  "ownedAddresses": [
+    "mytempaddress3@whatever.com",
+    "minecraft_god@whatever.com",
+    "st0p_spamming_me@whatever.com"
+  ]
+}
