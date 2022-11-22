@@ -34,9 +34,14 @@ export function initAuthEndpoints(server) {
             res.status(resp.code).json(resp);
         });
     });
+    server.post("/change-password", (req, res) => {
+        setPassword(req.body.email, req.body.token, req.body.pw, (resp) => {
+            res.status(resp.code).json(resp);
+        });
+    });
 }
 
-async function sha_256(param: string) {
+async function makeHash(param: string) {
     const msgBuffer = new TextEncoder().encode(param);
     // hash the message
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -56,16 +61,20 @@ function makeRandom(length: number, binaryString: boolean) : string {
     return salt;
 }
 
+async function dbSetUserPassword(email, pw, callback: (param: {code: number, message: string}) => void) {
+    var salt = makeRandom(8, true);
+    let pwhash = await makeHash(pw + salt);
+    auth_db.run("DELETE FROM Users WHERE email = ?", [email]);
+    auth_db.run("INSERT INTO Users VALUES (?, ?, ?)", [email, salt, pwhash]);
+    callback({code: 200, message: "Success"});
+}
+
 function addUser(email: string, pw: string, callback: (param: {code: number, message: string}) => void) {
     auth_db.all("SELECT * FROM Users WHERE email = ?", [email], async (err, rows) => {
-        // console.log(rows);
         if (rows.length > 0) {
             callback({code: 400, message: "Email already has an account!"});
         } else {
-            var salt = makeRandom(8, true);
-            let pwhash = await sha_256(pw + salt);
-            auth_db.run("INSERT INTO Users VALUES (?, ?, ?)", [email, salt, pwhash]);
-            callback({code: 200, message: "Success"});
+            dbSetUserPassword(email, pw, callback);
         }
     });
 }
@@ -81,7 +90,7 @@ function loginUser(email: string, pw: string, callback: (param: {code: number, t
                 if (rows.length === 0) {
                     callback({code: 400, token: "Email/Password combination invalid!"});
                 } else {
-                    let pwhash = await sha_256(pw + rows[0].salt);
+                    let pwhash = await makeHash(pw + rows[0].salt);
                     if (pwhash !== rows[0].pwhash) {
                         callback({code: 400, token: "Email/Password combination invalid!"});
                         return;
@@ -102,6 +111,17 @@ function logoutUser(email: string, token: string, callback: (param: {code: numbe
             resp = {code: 200, message: "Logged out of " + email};
         }
         callback(resp);
+    });
+}
+
+function setPassword(email: string, token: string, password: string, callback: (param: {code: number, message: string}) => void) {
+    verifyToken(email, token, (resp) => {
+        if (resp) {
+            callback(resp);
+        }
+        else {
+            dbSetUserPassword(email, password, callback);
+        }
     });
 }
 
