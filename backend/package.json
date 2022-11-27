@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsc --watch",
     "start": "npm install && nodemon dist/index.js",
+    "test": "node test/sample-req.js",
     "reset": "rm -r dist/* && rm .data/* && npx tsc"
   },
   "keywords": [],
