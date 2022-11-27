@@ -1,6 +1,12 @@
 -- db-schema.sql
 -- SQL code to execute when initializing the database for the first time.
 
+/* Sanity check table for sanity check 'echo' endpoints.  */
+CREATE TABLE KeyValue (
+    Key TEXT,
+    Value TEXT
+);
+
 /* Accounts that users register with our application.  We also refer to these
    as "parent emails" or "parent addresses" to disambiguate them from the
    throwaway email addresses that users make within the application.
