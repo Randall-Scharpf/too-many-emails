@@ -3,6 +3,7 @@
 
 // Or consider using node -r dotenv/config dist/index.js
 import * as dotenv from 'dotenv';
+import { initAuthEndpoints } from './auth';
 import { initDB } from './db';
 import { server } from './endpoints';
 
@@ -12,6 +13,9 @@ dotenv.config({ override: true });
 
 // Initialize the database if necessary
 initDB();
+
+// Initialize some endpoints
+initAuthEndpoints(server);
 
 /**
  * Start the server runtime.

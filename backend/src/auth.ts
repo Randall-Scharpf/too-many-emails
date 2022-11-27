@@ -5,6 +5,8 @@
 
 import crypto = require("node:crypto");
 
+import express = require("express");
+
 import db from "./db";
 
 
@@ -18,7 +20,7 @@ import db from "./db";
  *      /logout-user
  *      /change-password
  */
-export function initAuthEndpoints(server) {
+export function initAuthEndpoints(server: express.Application): void {
     server.post("/create-user", (req, res) => {
         addUser(req.body.email, req.body.pw, (resp) => {
             res.status(resp.code).json(resp);
