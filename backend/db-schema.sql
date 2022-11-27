@@ -1,17 +1,26 @@
-/* Sanity check table.  */
-CREATE TABLE KeyValue (
-    Key TEXT,
-    Value TEXT
-);
+-- db-schema.sql
+-- SQL code to execute when initializing the database for the first time.
 
 /* Accounts that users register with our application.  We also refer to these
    as "parent emails" or "parent addresses" to disambiguate them from the
-   throwaway email addresses that users make within the application.  */
-CREATE TABLE User (
+   throwaway email addresses that users make within the application.
+   NOTE: Inconsistency in naming due to trying to not break Randall's existing
+   auth.ts.  */
+CREATE TABLE Users (
     UserID INTEGER PRIMARY KEY AUTOINCREMENT,
-    EmailAddress TEXT UNIQUE NOT NULL,
-    PasswordHash TEXT NOT NULL, -- SHA-256
-    PasswordSalt TEXT NOT NULL -- 8 random ASCII
+    email TEXT UNIQUE NOT NULL,
+    pwhash TEXT NOT NULL, -- SHA-256
+    salt TEXT NOT NULL -- 8 random ASCII
+);
+
+/* Authentication tokens.
+   NOTE: Inconsistency in naming due to trying not to break Randall's existing
+   auth.ts.  */
+CREATE TABLE Tokens (
+    TokenID INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL,
+    token TEXT NOT NULL,
+    expiry INTEGER NOT NULL
 );
 
 /* Addresses that users create within their account.  These are the throwaway
