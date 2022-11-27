@@ -29,7 +29,7 @@ CREATE TABLE Address (
     AddressID INTEGER PRIMARY KEY AUTOINCREMENT,
     EmailAddress TEXT UNIQUE NOT NULL,
     UserID INTEGER,
-    FOREIGN KEY (UserID) REFERENCES User (UserID)
+    FOREIGN KEY (UserID) REFERENCES Users (UserID)
 );
 
 /* An email sent by or received by our client.  */
