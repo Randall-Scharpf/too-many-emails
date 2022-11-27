@@ -1,47 +1,56 @@
 // db.ts
-// Handler for database operators.
+// Handler for database operations.
 
-import * as fs from 'node:fs';
-import * as sqlite3 from 'sqlite3';
-import { getLog } from './logging';
+import fs = require("node:fs");
 
-const log = getLog(__filename);
-const DB_FILE = process.env.DB_FILE || "./.data/sqlite.db";
+import sqlite3 = require("sqlite3");
 
+
+const DB_FILE = "./.data/sqlite.db";
+const SCHEMA_FILE = "./db-schema.sql"
+
+/** SQLite3 database client instance.  */
+const db = new (sqlite3.verbose()).Database(DB_FILE);
+export default db;
+
+// Ensure paths
 const exists = fs.existsSync(DB_FILE);
-
-/* Ensure paths */
 if (!fs.existsSync("./.data")) {
     fs.mkdirSync("./.data");
 }
 if (!exists) {
     fs.openSync(DB_FILE, 'w');
 }
-const sqlite = require("sqlite3").verbose();
-const db = new sqlite.Database(DB_FILE);
 
-db.serialize(() => {
+/**
+ * Initialize database by executing the contents of the db-schema.sql file to
+ * create the tables.  Does nothing if the database file already exists.
+ */
+export function initDB(): void {
+    // Execute schema if it's a fresh DB file
     if (!exists) {
-        db.run(
-            "CREATE TABLE KeyValue (key TEXT, value TEXT)"
-        );
-        log("New table KeyValue created!");
+        console.log(`${DB_FILE} is a new file, running ${SCHEMA_FILE}...`);
+        const schema = fs.readFileSync(SCHEMA_FILE).toString();
+        db.exec(schema, (err: Error): void => {
+            err
+                ? console.error(err.message)
+                : console.log(`Successfully initialized ${DB_FILE}.`);
+        });
+    } else {
+        console.log(`${DB_FILE} already existed, not creating tables.`);
     }
-    require("./auth").initAuthDb(db, !exists);
-});
+}
 
-db.each("SELECT * FROM KeyValue", (err, row) => {
-    log(row);
-});
 
-export function writeKv(key: string, value: string) : void {
+// TODO: not sure what to do with these:
+
+export function writeKv(key: string, value: string): void {
     db.run("DELETE FROM KeyValue WHERE key = ?", [key]);
     db.run("INSERT INTO KeyValue VALUES (?, ?)", [key, value]);
 }
 
 export function readKv(key: string, callback: (val: string | undefined, err: string | undefined) => void): void {
     db.all("SELECT * FROM KeyValue WHERE key = ?", [key], (err: string, rows) => {
-        log(rows);
         if (rows.length > 0) {
             callback(rows[0].value, undefined);
         } else {
