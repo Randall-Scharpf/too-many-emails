@@ -26,6 +26,13 @@ export function initAddressEndpoints(server: express.Application): void {
         });
     });
     server.post("/address", (req, res) => {
+        const { email, address } = req.body;
+        if (!email) {
+            return res.status(400).json({ code: 400, message: "No email supplied " });
+        }
+        if (!address) {
+            return res.status(400).json({ code: 400, message: "No address to add supplied " });
+        }
         addAddress(req.body.email, req.body.address, (resp) => {
             res.status(resp.code).json(resp);
         });
