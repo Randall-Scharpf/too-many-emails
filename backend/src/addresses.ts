@@ -4,16 +4,7 @@
 import express = require("express");
 
 import db from './db';
-
-/** Represents an HTTP response to populate and send back via res.  */
-interface Response {
-    /** HTTP status code.  */
-    code: number,
-    /** Error message for bad requests.  */
-    message?: string
-    /** Requested JSON content for fulfilled requests.  */
-    json?: object
-}
+import { Response } from "./types";
 
 
 /**

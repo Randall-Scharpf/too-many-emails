@@ -30,3 +30,14 @@ export interface Email {
      */
     text?: string
 }
+
+
+/** Represents an HTTP response to populate and send back via res.  */
+export interface Response {
+    /** HTTP status code.  */
+    code: number,
+    /** Error message for bad requests.  */
+    message?: string
+    /** Requested JSON content for fulfilled requests.  */
+    json?: object
+}
