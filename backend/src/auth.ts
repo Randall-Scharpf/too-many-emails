@@ -44,14 +44,9 @@ export function initAuthEndpoints(server: express.Application): void {
 }
 
 async function makeHash(param: string) {
-    const msgBuffer = new TextEncoder().encode(param);
-    // hash the message
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    // convert ArrayBuffer to Array
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    // convert bytes to hex string
-    const hashHex = hashArray.map(b => String.fromCharCode(b)).join('');
-    return hashHex;
+    let N = 16384*8;
+    let x = crypto.scryptSync("", param, 256, { N: N, r: 8, p: 1, maxmem: 256*N*8 }).toString();
+    return x;
 }
 
 function makeRandom(length: number, binaryString: boolean): string {
@@ -64,7 +59,7 @@ function makeRandom(length: number, binaryString: boolean): string {
 }
 
 async function dbSetUserPassword(email, pw, callback: (param: { code: number, message: string }) => void) {
-    var salt = makeRandom(8, true);
+    var salt = makeRandom(16, true);
     let pwhash = await makeHash(pw + salt);
     db.run("DELETE FROM Users WHERE email = ?", [email]);
     db.run("INSERT INTO Users VALUES (?, ?, ?)", [email, salt, pwhash]);
@@ -97,7 +92,7 @@ function loginUser(email: string, pw: string, callback: (param: { code: number, 
                         callback({ code: 400, token: "Email/Password combination invalid!" });
                         return;
                     }
-                    var token = makeRandom(24, false);
+                    var token = makeRandom(64, false);
                     db.run("INSERT INTO Tokens VALUES (?, ?, ?)", [email, token, Date.now() + EXPIRY_MILLIS]);
                     callback({ code: 200, token: token });
                 }
