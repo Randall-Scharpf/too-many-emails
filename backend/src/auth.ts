@@ -44,8 +44,8 @@ export function initAuthEndpoints(server: express.Application): void {
 }
 
 async function makeHash(param: string) {
-    let N = 16384*8;
-    let x = crypto.scryptSync("", param, 256, { N: N, r: 8, p: 1, maxmem: 256*N*8 }).toString();
+    let N = 16384 * 8;
+    let x = crypto.scryptSync("", param, 256, { N: N, r: 8, p: 1, maxmem: 256 * N * 8 }).toString();
     return x;
 }
 
@@ -62,7 +62,7 @@ async function dbSetUserPassword(email, pw, callback: (param: { code: number, me
     var salt = makeRandom(16, true);
     let pwhash = await makeHash(pw + salt);
     db.run("DELETE FROM Users WHERE email = ?", [email]);
-    db.run("INSERT INTO Users VALUES (?, ?, ?)", [email, salt, pwhash]);
+    db.run("INSERT INTO Users (email, pwhash, salt) VALUES (?, ?, ?)", [email, pwhash, salt]);
     callback({ code: 200, message: "Success" });
 }
 
@@ -93,7 +93,7 @@ function loginUser(email: string, pw: string, callback: (param: { code: number, 
                         return;
                     }
                     var token = makeRandom(64, false);
-                    db.run("INSERT INTO Tokens VALUES (?, ?, ?)", [email, token, Date.now() + EXPIRY_MILLIS]);
+                    db.run("INSERT INTO Tokens (email, token, expiry) VALUES (?, ?, ?)", [email, token, Date.now() + EXPIRY_MILLIS]);
                     callback({ code: 200, token: token });
                 }
             });

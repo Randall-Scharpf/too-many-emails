@@ -12,9 +12,9 @@ server.postToServer("/db-post", { key: 'cooler' }, console.log, console.log);
 server.postToServer("/db-post", { key: 'coolest', value: 'stuffed' }, console.log, console.log);
 
 // authentication endpoints
-// server.postToServer("/create-user", { email: 'josie_bruin@ucla.edu', pw: '12345678' }, console.log, console.log);
+server.postToServer("/create-user", { email: 'josie_bruin@ucla.edu', pw: '12345678' }, console.log, console.log);
 server.postToServer("/login-user", { email: 'josie_bruin@ucla.edu', pw: '12345678' }, (res) => {
-    // console.log(res);
+    console.log(res);
     server.postToServer("/change-password", { email: 'josie_bruin@ucla.edu', token: res.token, pw: '12345678' }, console.log, console.log);
     server.postToServer("/logout-user", { email: 'josie_bruin@ucla.edu', token: res.token }, console.log, console.log);
 }, console.log);
