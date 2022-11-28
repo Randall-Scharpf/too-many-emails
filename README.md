@@ -93,3 +93,5 @@ npm start
 - Using `npx tsc` for manual compilation or [`npm run dev`](backend/package.json#L7) to compile on save, the TS files are generated in the `.gitignore`d dist directory.
 - We can edit the [TypeScript configuration file](backend/tsconfig.json) if we decide to update our TypeScript compiler preferences.
 - Use the `npm start` script to start the server runtime. I use the [nodemon](https://www.npmjs.com/package/nodemon) development dependency to watch the compiled JavaScript files and automatically restart the server upon changes.
+- Use the `npm run reset` script to forcefully recompile all `*.js` files and remove the database file from `.data/sqlite.db` entirely.
+- Use the `npm run test` script to run the sanity check script `test/sample-req.js` for testing basic endpoint and DB functionality.

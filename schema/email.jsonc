@@ -39,11 +39,5 @@
    *
    * Body of the email, in plain text.
    */
-  "text": "Dear all,\n\nThis is an email I'm sending to inform you that I missed my COM SCI exam this morning.\n\nWould it be possible to arrange a make-up?\n\nThanks,\nJoe Bruin\n",
-  /**
-   * string
-   *
-   * Body of the email, in HTML (for accessibility purposes).
-   */
-  "html": "<h1>We <em>probably</em> won't use this feature lol</h1>"
+  "text": "Dear all,\n\nThis is an email I'm sending to inform you that I missed my COM SCI exam this morning.\n\nWould it be possible to arrange a make-up?\n\nThanks,\nJoe Bruin\n"
 }
