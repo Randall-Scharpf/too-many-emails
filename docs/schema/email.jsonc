@@ -15,15 +15,15 @@
     "geneblock@gmail.com"
   ],
   /**
-   * string
+   * string | null
    *
-   * Subject line of the email. Empty if none included.
+   * Subject line of the email. null if none included.
    */
   "subject": "Regarding that Exam I Missed",
   /**
-   * string
+   * string | null
    *
-   * Body of the email, in plain text.
+   * Body of the email, in plain text. null if none included.
    */
   "text": "Dear all,\n\nThis is an email I'm sending to inform you that I missed my COM SCI exam this morning.\n\nWould it be possible to arrange a make-up?\n\nThanks,\nJoe Bruin\n"
 }
