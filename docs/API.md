@@ -243,9 +243,6 @@ Example response JSON:
 ## Owned Addresses API
 
 
-**NOTE:** For the endpoints I (Vincent) wrote, due to a misunderstanding, the meaningful content (like an array of email addresses) is stored under the key `json` *within* the JSON response, which may be confusing. This `json` key is also `undefined` if you encounter an error, in which case an error `message` takes its place, but I imagine the `.catch()` callback will stop you from calling `undefined.json`. I'm not sure at all TBH. I have not tested most of this. If we encounter problems, I'll try to fix up the API.
-
-
 ### GET `/all-addresses`
 
 Get all the addresses that a user owns. Responds with a `400` error if the input `email` is not registered as one of our users.
@@ -263,7 +260,7 @@ Example response JSON:
 ```json
 {
   "code": 200,
-  "json": [
+  "addresses": [
     "throwaway1@lmao.com",
     "throwaway3@lmao.com",
     "throwaway2@lmao.com"
@@ -293,7 +290,7 @@ Example response JSON:
 ```json
 {
   "code": 200,
-  "json": {}
+  "message": "Added throwaway4@lmao.com to user josie_bruin@ucla.edu's list"
 }
 ```
 
@@ -320,7 +317,7 @@ Example response JSON:
 ```json
 {
   "code": 200,
-  "json": [
+  "emails": [
     {
       "from": "throwaway2@lmao.com",
       "to": [
@@ -362,7 +359,7 @@ Example response JSON:
 ```json
 {
   "code": 200,
-  "json": [
+  "emails": [
     {
       "from": "throwaway1@lmao.com",
       "to": [
@@ -399,7 +396,7 @@ Example response JSON:
 ```json
 {
   "code": 200,
-  "json": {}
+  "message": "Stored email from throwaway2@lmao.com to eggert@cs.ucla.edu,throwaway4@lmao.com"
 }
 ```
 

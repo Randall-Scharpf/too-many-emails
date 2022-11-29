@@ -4,7 +4,7 @@
 import { Application } from "express";
 
 import db from "./db";
-import { Email, Response } from "./types";
+import { Email } from "./types";
 
 /** Schema of a row from the Email table of our database.  */
 interface EmailRow {
@@ -57,7 +57,7 @@ export function initEmailEndpoints(server: Application): void {
         if (!address || typeof address !== 'string') {
             return res.status(400).json({ code: 400, message: "No address supplied" });
         }
-        getSentEmails(address, (resp: Response): void => {
+        getSentEmails(address, (resp): void => {
             res.status(resp.code).json(resp);
         });
     });
@@ -66,7 +66,7 @@ export function initEmailEndpoints(server: Application): void {
         if (!address || typeof address !== 'string') {
             return res.status(400).json({ code: 400, message: "No address supplied" });
         }
-        getReceivedEmails(address, (resp: Response): void => {
+        getReceivedEmails(address, (resp): void => {
             res.status(resp.code).json(resp);
         });
     });
@@ -74,7 +74,7 @@ export function initEmailEndpoints(server: Application): void {
         if (!validateEmail(req.body)) {
             return res.status(400).json({ code: 400, message: "Body does not conform with shape of Email interface" });
         }
-        storeEmail(req.body as Email, (resp: Response): void => {
+        storeEmail(req.body as Email, (resp): void => {
             res.status(resp.code).json(resp);
         });
     });
@@ -87,7 +87,7 @@ export function initEmailEndpoints(server: Application): void {
  */
 function getSentEmails(
     address: string,
-    callback: (resp: Response) => void
+    callback: (resp) => void
 ): void {
 
     db.all("SELECT * FROM Email WHERE SenderAddress = ?", [address],
@@ -115,7 +115,7 @@ function getSentEmails(
             // Populate response with an array of Email models
             return callback({
                 code: 200,
-                json: emails
+                emails: emails
             });
         }
     );
@@ -129,7 +129,7 @@ function getSentEmails(
  */
 function getReceivedEmails(
     address: string,
-    callback: (resp: Response) => void
+    callback: (resp) => void
 ): void {
 
     // Copy-paste go brrr
@@ -159,7 +159,7 @@ function getReceivedEmails(
             // Populate response with an array of Email models
             return callback({
                 code: 200,
-                json: emails
+                emails: emails
             });
         }
     );
@@ -172,7 +172,7 @@ function getReceivedEmails(
  */
 function storeEmail(
     email: Email,
-    callback: (resp: Response) => void
+    callback: (resp) => void
 ): void {
 
     db.run(
@@ -189,7 +189,7 @@ function storeEmail(
             // Success
             return callback({
                 code: 200,
-                json: {}
+                message: `Stored email from ${email.from} to ${email.to}`
             });
         }
     );

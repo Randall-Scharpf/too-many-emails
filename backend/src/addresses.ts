@@ -4,7 +4,6 @@
 import express = require("express");
 
 import db from './db';
-import { Response } from "./types";
 
 
 /**
@@ -46,7 +45,7 @@ export function initAddressEndpoints(server: express.Application): void {
  */
 function getAddresses(
     email: string,
-    callback: (resp: Response) => void
+    callback: (resp) => void
 ): void {
 
     // First get the UserID from email address
@@ -72,7 +71,7 @@ function getAddresses(
                 // Populate response with an array of email address strings
                 return callback({
                     code: 200,
-                    json: rows.map(row => row.EmailAddress)
+                    addresses: rows.map(row => row.EmailAddress)
                 });
             }
         );
@@ -87,7 +86,7 @@ function getAddresses(
 function addAddress(
     email: string,
     address: string,
-    callback: (resp: Response) => void
+    callback: (resp) => void
 ): void {
 
     // First get the UserID from email address
@@ -124,7 +123,7 @@ function addAddress(
                 // Success
                 return callback({
                     code: 200,
-                    json: {}
+                    message: `Added ${address} to user ${email}'s list`
                 });
             }
         );
