@@ -1,6 +1,7 @@
 // types.ts
 // Define and export interfaces here
 
+/** Represents an email sent or received by our client.  */
 export interface Email {
     /**
      * Email address of the sender.  It can be in the format 'username@domain.com'
@@ -11,16 +12,6 @@ export interface Email {
      * Email addresses to send to.  These support the same format as the sender.
      */
     to: Array<string>,
-    /**
-     * Optional email addresses to CC. These support the same format as the
-     * sender.
-     */
-    cc?: Array<string>,
-    /**
-     * Optional email addresses to BCC. These support the same format as the
-     * sender.
-     */
-    bcc?: Array<string>,
     /**
      * Optional subject line of the email.
      */
