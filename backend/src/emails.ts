@@ -3,11 +3,18 @@
 
 import { Application } from "express";
 
-import { getUserID } from "./addresses";
 import db from "./db";
 import { Email, Response } from "./types";
 
-db; // Temporary line so that auto-formatter doesn't remove the import line
+/** Schema of a row from the Email table of our database.  */
+interface EmailRow {
+    EmailID: number
+    Subject: string | null
+    Body: string | null
+    SenderAddress: string
+    ReceiverAddresses: string
+    Timestamp: number
+}
 
 
 /**
@@ -21,8 +28,13 @@ db; // Temporary line so that auto-formatter doesn't remove the import line
  */
 export function initEmailEndpoints(server: Application): void {
     server.get("/all-sent-emails", (req, res) => {
-        // TODO: Verify that the incoming req.body.address exists.
-        // Then call getSentEmails().
+        const { address } = req.body;
+        if (!address) {
+            return res.status(400).json({ code: 400, message: "No address supplied " });
+        }
+        getSentEmails(address, (resp: Response): void => {
+            res.status(resp.code).json(resp);
+        });
     });
     server.get("/all-received-emails", (req, res) => {
         // TODO: Verify that the incoming req.body.address exists.
@@ -42,23 +54,37 @@ export function initEmailEndpoints(server: Application): void {
 function getSentEmails(
     address: string,
     callback: (resp: Response) => void
-
 ): void {
-    // First get the User ID
-    getUserID(address, (UserID: number | null): void => {
-        if (UserID === null) {
-            callback({
-                code: 400,
-                message: `No email address found that matches ${address}.`
+
+    db.all("SELECT * FROM Email WHERE SenderAddress = ?", [address],
+        (err: Error, rows: EmailRow[]): void => {
+            if (err) {
+                console.error(err.message);
+                return callback(
+                    {
+                        code: 500,
+                        message: `Couldn't retrieve sent emails for address ${address}`
+                    }
+                );
+            }
+
+            // Convert EmailRow[] to Email[]
+            const emails = rows.map(row => {
+                return {
+                    from: row.SenderAddress,
+                    to: row.ReceiverAddresses.split(","),
+                    subject: row.Subject,
+                    text: row.Body
+                } as Email
+            })
+
+            // Populate response with an array of Email models
+            return callback({
+                code: 200,
+                json: emails
             });
         }
-
-        // Then get all emails with that ID as sender
-        else {
-            // TODO: Working on new Transmission DB table first to model the
-            // many-to-many relationship of senders and receivers.
-        }
-    });
+    );
 }
 
 
