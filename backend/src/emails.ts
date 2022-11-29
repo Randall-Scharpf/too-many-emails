@@ -18,6 +18,31 @@ interface EmailRow {
 
 
 /**
+ * Brute force type and and value validator to check if a request's body matches
+ * the Email interface.
+ */
+function validateEmail(body: any): boolean {
+    if (typeof body !== "object")
+        return false;
+    // Validate sender
+    if (typeof body.from !== "string")
+        return false;
+    // Validate recipients
+    if (!Array.isArray(body.to))
+        return false;
+    if (!body.to.every(item => typeof item === "string"))
+        return false;
+    // Validate subject line
+    if (body.subject !== null && typeof body.subject !== "string")
+        return false;
+    // Validate email body text
+    if (body.text !== null && typeof body.text !== "string")
+        return false;
+    return true;
+}
+
+
+/**
  * Register backend endpoints for email object related operations.
  *
  * These endpoints are:
@@ -30,31 +55,26 @@ export function initEmailEndpoints(server: Application): void {
     server.get("/all-sent-emails", (req, res) => {
         const { address } = req.body;
         if (!address) {
-            return res.status(400).json({ code: 400, message: "No address supplied " });
+            return res.status(400).json({ code: 400, message: "No address supplied" });
         }
         getSentEmails(address, (resp: Response): void => {
             res.status(resp.code).json(resp);
         });
     });
     server.get("/all-received-emails", (req, res) => {
-        // TODO: Verify that the incoming req.body.address exists
         const { address } = req.body;
-        // Then call getReceivedEmails().
+        if (!address) {
+            return res.status(400).json({ code: 400, message: "No address supplied" });
+        }
         getReceivedEmails(address, (resp: Response): void => {
             res.status(resp.code).json(resp);
         });
     });
     server.post("/email", (req, res) => {
-        // TODO: Validate that the incoming req.body has the shape of an Email.
-        // I THINK I'LL TRUST THE CALLERS DO THIS PROPERLY
-        const { from, to, subject, text } = req.body;
-        const emailModel = {
-            from,
-            to,
-            subject,
-            text
-        } as Email;
-        storeEmail(emailModel, (resp: Response): void => {
+        if (!validateEmail(req.body)) {
+            return res.status(400).json({ code: 400, message: "Body does not conform with shape of Email interface" });
+        }
+        storeEmail(req.body as Email, (resp: Response): void => {
             res.status(resp.code).json(resp);
         });
     });
