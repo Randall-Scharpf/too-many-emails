@@ -7,7 +7,8 @@
     "dev": "tsc --watch",
     "start": "npm install && nodemon dist/index.js",
     "test": "node test/sample-req.js",
-    "reset": "rm -r dist/* && rm .data/* && npx tsc"
+    "reset": "rm -r dist/* && rm .data/* && npx tsc",
+    "drop": "rm .data/*"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "@types/node": "^18.11.3",
     "@types/nodemailer": "^6.4.6",
     "@types/sqlite3": "^3.1.8",
+    "node-fetch": "^2.6.7",
     "nodemon": "^2.0.20",
     "typescript": "^4.8.4"
   },

@@ -15,20 +15,6 @@
     "geneblock@gmail.com"
   ],
   /**
-   * Array<string>, length >= 0
-   *
-   * Email addresses to CC.
-   */
-  "cc": [],
-  /**
-   * Array<string>, length >= 0
-   *
-   * Email addresses to BCC.
-   */
-  "bcc": [
-    "joe_mama@yahoo.com"
-  ],
-  /**
    * string
    *
    * Subject line of the email. Empty if none included.
