@@ -7,7 +7,8 @@
     "dev": "tsc --watch",
     "start": "npm install && nodemon dist/index.js",
     "test": "node test/sample-req.js",
-    "reset": "rm -r dist/* && rm .data/* && npx tsc"
+    "reset": "rm -r dist/* && rm .data/* && npx tsc",
+    "drop": "rm .data/*"
   },
   "keywords": [],
   "author": "",
