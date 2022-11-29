@@ -90,14 +90,45 @@ function getSentEmails(
 
 /**
  * Given some email address, populate the response with an array of email
- * objects representing all that address' received emails.
+ * objects representing all the emails for which the address is or one of the
+ * recipients.
  */
 function getReceivedEmails(
     address: string,
     callback: (resp: Response) => void
 ): void {
 
-    // TODO.
+    // Copy-paste go brrr
+    // Except oops, gotta pattern match this time
+    db.all("SELECT * FROM Email WHERE ReceiverAddress LIKE %?%", [address],
+        (err: Error, rows: EmailRow[]): void => {
+            if (err) {
+                console.error(err.message);
+                return callback(
+                    {
+                        code: 500,
+                        message: `Couldn't retrieve received emails for address ${address}`
+                    }
+                );
+            }
+
+            // Convert EmailRow[] to Email[]
+            const emails = rows.map(row => {
+                return {
+                    from: row.SenderAddress,
+                    to: row.ReceiverAddresses.split(","),
+                    subject: row.Subject,
+                    text: row.Body
+                } as Email
+            })
+
+            // Populate response with an array of Email models
+            return callback({
+                code: 200,
+                json: emails
+            });
+        }
+    );
 }
 
 
