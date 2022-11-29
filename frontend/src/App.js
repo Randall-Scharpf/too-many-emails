@@ -17,6 +17,23 @@ import Signup from "./components/Signup/Signup";
 import { db } from "./firebase";
 import { NavigateBefore } from "@material-ui/icons";
 
+// Added for testing
+import fetch from 'node-fetch';
+async function test() {
+  const response = await fetch('http://localhost:80/address', {
+    method: 'post',
+    body: JSON.stringify({
+      email: "josie_bruin@ucla.edu",
+      address: "some_addressfkashga@lol.com"
+    }),
+    headers: {'Content-Type': 'application/json'}
+  });
+  const data = await response.json();
+  console.log(data);
+}
+
+test().catch(console.error);
+
 function App() {
   const sendMessageIsOpen = useSelector(selectSendMessageIsOpen);
   const user = useSelector(selectUser);
