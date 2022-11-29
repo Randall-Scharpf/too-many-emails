@@ -17,8 +17,8 @@ import { Response } from "./types";
  */
 export function initAddressEndpoints(server: express.Application): void {
     server.get("/all-addresses", (req, res) => {
-        const email = req.body.email;
-        if (!email) {
+        const { email } = req.query;
+        if (!email || typeof email !== 'string') {
             return res.status(400).json({ code: 400, message: "No email supplied" });
         }
         getAddresses(email, (resp) => {

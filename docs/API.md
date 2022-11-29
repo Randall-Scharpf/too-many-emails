@@ -3,6 +3,9 @@
 - [Back-end API](#back-end-api)
   - [Running the Server](#running-the-server)
   - [Using the Endpoint API](#using-the-endpoint-api)
+  - [`fetch()` API Crash Quick Start](#fetch-api-crash-quick-start)
+    - [POST Request Boilerplate](#post-request-boilerplate)
+    - [GET Request Boilerplate](#get-request-boilerplate)
   - [Authentication API](#authentication-api)
     - [POST `/create-user`](#post-create-user)
     - [POST `/login-user`](#post-login-user)
@@ -46,13 +49,28 @@ npm start
 
 For example, if an endpoint is specified as **POST** `/create-user`, this means it is designed to be reached with a `POST` request to the full URL of `http://localhost:80/create-user`.
 
-For all endpoints, you must supply JSON data as part of the **request body**. Each endpoint expects different bodies and returns different **JSON responses**, so refer to the documentation of the specific endpoint detailed in the subsequent sections.
+* For **POST** endpoints, you must supply JSON data as part of the **request body**.
+* FOR **GET** endpoints, you must supply **URL parameters** appended to the endpoint URL.
+* Each endpoint expects different bodies/parameters and returns different **JSON responses**, so refer to the documentation of the specific endpoint detailed in the later sections.
 
-You can supply the required metadata via the [`fetch()` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) like so:
+
+## `fetch()` API Crash Quick Start
+
+Some good resources:
+
+* [Getting data from an API from React (YouTube)](https://www.youtube.com/watch?v=hzLDsxPGctY)
+* [Mozilla fetch() API documentation](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+
+
+### POST Request Boilerplate
+
+You can supply the required metadata as part of the `init` parameter object to `fetch()`:
 
 ```javascript
+/* POST REQUEST BOILERPLATE */
+
 fetch('http://localhost:80/create-user', {
-    method: 'POST', // optional for 'GET'
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
         email: 'josie_bruin@ucla.edu',
@@ -60,11 +78,11 @@ fetch('http://localhost:80/create-user', {
     })
 })
     // Convert the Response object to JSON
-    .then((response) => response.json())
+    .then(response => response.json())
     // Code to run using that JSON data
-    .then((data) => { console.log(data); })
+    .then(data => useThisData(data))
     // Code to run if fetching failed
-    .catch((error) => { console.error(error); });
+    .catch(console.error);
 ```
 
 In the above example, the **request body**:
@@ -76,7 +94,7 @@ In the above example, the **request body**:
 }
 ```
 
-Is what you're *sending* to the endpoint `http://localhost:80/create-user`. The **JSON response** is captured in the second `.then()`, as the `data` parameter. Usually you would pass this newly received data into the state of your current component for further processing:
+Is what you're *sending* to the endpoint `http://localhost:80/create-user`. The **JSON response** is captured in the second `.then()`, as the `data` parameter. Usually you would pass this newly received data into the state of your current component for further processing. This allows you to act on this data on your own terms instead of being confined to this callback hell.
 
 ```javascript
 /* other code */
@@ -87,14 +105,43 @@ Is what you're *sending* to the endpoint `http://localhost:80/create-user`. The 
         })
     })
 /* other code */
+
+// Then maybe some other part of your component class is responsible
+// for doing something with this.state.foo and this.state.bar.
 ```
 
-The advantage of this is that `this.setState` tells React to re-render the component, allowing whatever change you just made to take effect *visually*.
+Another advantage of this is that `this.setState()` tells React to re-render the component, allowing whatever change you just made to take effect *visually*.
 
-Some good resources:
 
-* [Getting data from an API from React (YouTube)](https://www.youtube.com/watch?v=hzLDsxPGctY)
-* [Mozilla fetch() API documentation](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+### GET Request Boilerplate
+
+It's a bit simpler for **GET** requests:
+
+```javascript
+/* GET REQUEST BOILERPLATE */
+
+const params = new URLSearchParams({
+    address: 'josie_bruin@ucla.edu',
+}).toString();
+fetch(`http://localhost:80/all-addresses?${params}`)
+    .then(response => response.json())
+    .then(data => useThisData(data))
+    .catch(console.error);
+```
+
+In the above example, the key-value pair:
+
+```javascript
+{
+    address: 'josie_bruin@ucla.edu'
+}
+```
+
+Is converted into a URL-encoded string `email=josie_bruin@ucla.edu`, which is now safe to append to the endpoint after the special `?` token, denoting **URL parameters**. Don't forget the `?` between `http://localhost:80` and your parameters string!
+
+[As with above](#post-request-boilerplate), typically you'd want to call React's `this.setState()` with the data you just received so that you can process it outside of the callback, also telling React to re-render the component.
+
+The rest of the sections are the documentation for the specific endpoints. They're designed so that you can simply replace the respective `body` or `params` boilerplate in the request with the objects show in each example. Processing the JSON response, `data`, is then a matter of knowing what keys are available and what types they are, which are also provided in examples below.
 
 
 ## Authentication API
@@ -203,7 +250,7 @@ Example response JSON:
 
 Get all the addresses that a user owns. Responds with a `400` error if the input `email` is not registered as one of our users.
 
-Example request body:
+Example key-value pairs to encode:
 
 ```json
 {
@@ -260,7 +307,7 @@ Get all the emails sent through our client by a particular email address. This e
 
 The returned email objects conform to the schema defined in [schema/email.json](schema/email.jsonc).
 
-Example request body:
+Example key-value pairs to encode:
 
 ```json
 {
@@ -302,7 +349,7 @@ Get all the emails for which a particular email address is or is one of the reci
 
 The returned email objects conform to the schema defined in [schema/email.json](schema/email.jsonc).
 
-Example request body:
+Example key-value pairs to encode:
 
 ```json
 {

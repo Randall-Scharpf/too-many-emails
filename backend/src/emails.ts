@@ -53,8 +53,8 @@ function validateEmail(body: any): boolean {
  */
 export function initEmailEndpoints(server: Application): void {
     server.get("/all-sent-emails", (req, res) => {
-        const { address } = req.body;
-        if (!address) {
+        const { address } = req.query;
+        if (!address || typeof address !== 'string') {
             return res.status(400).json({ code: 400, message: "No address supplied" });
         }
         getSentEmails(address, (resp: Response): void => {
@@ -62,8 +62,8 @@ export function initEmailEndpoints(server: Application): void {
         });
     });
     server.get("/all-received-emails", (req, res) => {
-        const { address } = req.body;
-        if (!address) {
+        const { address } = req.query;
+        if (!address || typeof address !== 'string') {
             return res.status(400).json({ code: 400, message: "No address supplied" });
         }
         getReceivedEmails(address, (resp: Response): void => {
