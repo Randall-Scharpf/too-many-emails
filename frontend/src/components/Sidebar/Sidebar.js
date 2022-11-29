@@ -4,14 +4,28 @@ import "./Sidebar.css";
 import AddIcon from "@material-ui/icons/Add";
 
 import SidebarOption from "./SidebarOption";
-import SidebarCreatenew from "./SidebarCreatenew";
 
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { openSendMessage } from "../../features/mailSlice";
+import {useState} from "react";
 
 function Sidebar({ addresses }) {
   const dispatch = useDispatch();
+  const [message, setMessage]=useState('');
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    //check if $message is okay 
+    //if so add to stack of emails
+    //else error message
+    
+    setMessage("")
+    setErrorMessage("error")
+    //alert(`The name you entered was: ${message}`)
+
+    
+  }
 
   return (
     <div className="sidebar">
@@ -22,17 +36,26 @@ function Sidebar({ addresses }) {
       >
         Compose
       </Button>
-      <SidebarCreatenew 
-          className = "sidebarOption"
-         /> 
 
-      <Link to= "/" className = "sidebar">
+
+      <form onSubmit={handleSubmit}>
+          
+          <input 
+            type = "text"
+            placeholder="enter new address"
+            id="message"
+            name="message"
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
+          />
+         </form>
+      
+
         {addresses.map((address)=>(
           <SidebarOption
             title = {address}
             />
         ))}
-      </Link>
 
       
 
