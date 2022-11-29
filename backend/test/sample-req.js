@@ -34,25 +34,34 @@ server.postToServer("/address", { email: DUMMY_USER, address: "throwaway3@lmao.c
 const DUMMY_EMAILS = [
     {
         from: "throwaway2@lmao.com",
-        to: `${DUMMY_USER},nonexistent@abc123.com`,
+        to: [DUMMY_USER, "nonexistent@abc123.com"],
         subject: "My Test Email",
         text: "hellooo how are you doing"
     },
     {
         from: "throwaway1@lmao.com",
-        to: `throwaway2@lmao.com`,
+        to: ["throwaway2@lmao.com", "throwaway3@lmao.com"],
         subject: "lol sending this to myself",
         text: null
     },
     {
         from: "not_in_out_DB@whippee.com",
-        to: "strawberry@mango.edu",
+        to: ["strawberry@mango.edu"],
         subject: "Edgy edge case?",
         text: "lorem ipsum sin dolor"
+    },
+    {
+        from: "throwaway2@lmao.com",
+        to: ["strawberry@mango.edu"],
+        subject: null,
+        text: "sup bro"
     }
 ];
 
 // email endpoints
 for (const dummyEmail of DUMMY_EMAILS) {
-    server.postToServer("/email", { "email": dummyEmail }, console.log, console.error);
+    server.postToServer("/email", { ...dummyEmail }, console.log, console.error);
 }
+
+// TODO: this doesn't work because getFromServer only uses params instead of body
+// server.getFromServer("/all-sent-emails", { address: "throwaway2@lmao.com" }, console.log, console.error);

@@ -37,12 +37,26 @@ export function initEmailEndpoints(server: Application): void {
         });
     });
     server.get("/all-received-emails", (req, res) => {
-        // TODO: Verify that the incoming req.body.address exists.
+        // TODO: Verify that the incoming req.body.address exists
+        const { address } = req.body;
         // Then call getReceivedEmails().
+        getReceivedEmails(address, (resp: Response): void => {
+            res.status(resp.code).json(resp);
+        });
     });
     server.post("/email", (req, res) => {
         // TODO: Validate that the incoming req.body has the shape of an Email.
-        // Then call storeEmail().
+        // I THINK I'LL TRUST THE CALLERS DO THIS PROPERLY
+        const { from, to, subject, text } = req.body;
+        const emailModel = {
+            from,
+            to,
+            subject,
+            text
+        } as Email;
+        storeEmail(emailModel, (resp: Response): void => {
+            res.status(resp.code).json(resp);
+        });
     });
 }
 
@@ -100,7 +114,7 @@ function getReceivedEmails(
 
     // Copy-paste go brrr
     // Except oops, gotta pattern match this time
-    db.all("SELECT * FROM Email WHERE ReceiverAddress LIKE %?%", [address],
+    db.all("SELECT * FROM Email WHERE ReceiverAddresses LIKE ?", [`%${address}%`],
         (err: Error, rows: EmailRow[]): void => {
             if (err) {
                 console.error(err.message);
@@ -141,5 +155,22 @@ function storeEmail(
     callback: (resp: Response) => void
 ): void {
 
-    // TODO.
+    db.run(
+        "INSERT INTO Email (Subject, Body, SenderAddress, ReceiverAddresses) VALUES (?, ?, ?, ?)",
+        [email.subject || null, email.text || null, email.from, email.to.join(",")],
+        (err: Error) => {
+            if (err) {
+                console.error(err.message);
+                return callback({
+                    code: 500,
+                    message: err.message
+                });
+            }
+            // Success
+            return callback({
+                code: 200,
+                json: {}
+            });
+        }
+    );
 }

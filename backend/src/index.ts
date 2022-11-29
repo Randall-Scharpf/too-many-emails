@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import { initAddressEndpoints } from './addresses';
 import { initAuthEndpoints } from './auth';
 import { initDB } from './db';
+import { initEmailEndpoints } from './emails';
 import { server } from './endpoints';
 
 // Load any environment variables from .env file or shell,
@@ -18,6 +19,7 @@ initDB();
 // Initialize some endpoints
 initAuthEndpoints(server);
 initAddressEndpoints(server);
+initEmailEndpoints(server);
 
 /**
  * Start the server runtime.
