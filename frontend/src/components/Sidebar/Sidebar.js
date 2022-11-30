@@ -21,7 +21,7 @@ function Sidebar({ addresses }) {
     //else error message
     
     setMessage("")
-    setErrorMessage("error")
+    //setErrorMessage("error")
     //alert(`The name you entered was: ${message}`)
 
     

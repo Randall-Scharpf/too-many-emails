@@ -5,6 +5,7 @@ function SidebarOption({  title, selected }) {
   const openInbox = () =>{
     //inbox here
     //change state
+
   }
 
   
