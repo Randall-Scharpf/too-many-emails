@@ -13,64 +13,91 @@ import SendIcon from "@material-ui/icons/Send";
 import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import Section from "../Section/Section";
 import EmailRow from "../EmailRow/EmailRow";
+import { Component } from "react";
+import { getFromServer, postToServer } from "./../../helper";
 
-function EmailList({ emails }) {
-  return (
-    <div className="emailList">
-      {/* <div className="emailList-settings">
-        <div className="emailList-settingsLeft">
-          <Checkbox />
-          <IconButton>
-            <ArrowDropDownIcon />
-          </IconButton>
-          <IconButton>
-            <RedoIcon />
-          </IconButton>
-          <IconButton>
-            <MoreVertIcon />
-          </IconButton>
-        </div>
-        <div className="emailList-settingsRight">
-          <IconButton>
-            <ChevronLeftIcon />
-          </IconButton>
-          <IconButton>
-            <ChevronRightIcon />
-          </IconButton>
-          <IconButton>
-            <KeyboardHideIcon />
-          </IconButton>
-          <IconButton>
-            <SettingsIcon />
-          </IconButton>
-        </div>
-      </div> */}
-      <div className="emailList-sections">
-        <Section Icon={InboxIcon} title="Inbox" color="red" selected />
-        <Section Icon={SendIcon} title="Sent" color="#1A73E8" />
-        {/* <Section Icon={LocalOfferIcon} title="Promotions" color="green" /> */}
-      </div>
 
-      <div className="emailList-list">
-        {emails.map(({ id, data: { to, subject, message, timestamp } }) => (
+const TEMP_ADDRESS = 'throwaway2@lmao.com';
+
+class EmailList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      address: TEMP_ADDRESS, // change to props.address later
+      mode: "inbox",
+      emails_inbox: [],
+      emails_outbox: []
+    };
+  }
+
+  clickInbox() {
+    this.setState({ mode: "inbox" });
+    getFromServer('/all-received-emails', {
+      address: this.state.address
+    },
+      data => this.setState({ emails_inbox: data.emails }));
+  }
+
+  clickSent() {
+    this.setState({ mode: "outbox" });
+    getFromServer('/all-sent-emails', {
+      address: this.state.address
+    },
+      data => this.setState({ emails_outbox: data.emails }));
+  }
+
+  //
+  render() {
+    let boxComponent;
+    if (this.state.mode === "inbox") {
+      boxComponent = (<div className="emailList-list">
+        {this.state.emails_inbox.map((email) => (
           <EmailRow
-            id={id}
-            key={id}
-            title={to}
-            subject={subject}
-            description={message}
-            time={new Date(timestamp?.seconds * 1000).toUTCString()}
+            title={email.from}
+            subject={email.subject}
           />
         ))}
         <EmailRow
           title="Twitch"
           subject="Hey fellow streamer!!"
-          description="This is a DOPE"
-          time="10pm"
         />
+      </div>);
+    }
+    else if (this.state.mode === "outbox") {
+      boxComponent = (<div className="emailList-list">
+        {this.state.emails_outbox.map((email) => (
+          <EmailRow
+            title={email.to}
+            subject={email.subject}
+          />
+        ))}
+        <EmailRow
+          title="Twitch"
+          subject="Hey fellow streamer!! (but this is in outbox now)"
+        />
+      </div>);
+    }
+    else {
+      boxComponent = (<div>Work in progress!</div>);
+    }
+
+    return (
+      <div className="emailList">
+        
+        <div className="emailList-sections">
+          <button onClick={() => this.clickInbox()}>
+            <Section Icon={InboxIcon} title="Inbox" color="red" />
+          </button>
+          <button onClick={() => this.clickSent()}>
+            <Section Icon={SendIcon} title="Sent" color="#1A73E8" selected onClick={this.clickSent} />
+          </button>
+          {/* <Section Icon={LocalOfferIcon} title="Promotions" color="green" /> */}
+        </div>
+
+        {boxComponent}
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default EmailList;
