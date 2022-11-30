@@ -1,7 +1,7 @@
 .header{
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
     border-bottom: 1px solid whitesmoke;
 }
 
@@ -10,11 +10,29 @@
     align-items: center;
 }
 
-.header-left > img {
+.header-left > a img {
+    object-fit: contain; 
+    width: 70px; 
+}
+
+.header-left > a img:last-child {
+    object-fit: contain; 
+    display: none;  
+  }
+.header-left > a:hover img:last-child {
+    object-fit: contain; 
+    display: block;  
+  }
+.header-left > a:hover img:first-child {
+    object-fit: contain; 
+    display: none;  
+  }
+
+/* .header-left > img {
     object-fit: contain;
     height: 35px;
     margin-left: 5px;
-}
+} */
 
 .header-middle {
     display: flex;

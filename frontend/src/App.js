@@ -38,7 +38,7 @@ function App() {
 
   return (
     <Router>
-      {!user ? (
+      {user ? ( /*removed ! in front of user to hack login for NOW */
         <div>
           <Navbar />
           <LogInContainer />

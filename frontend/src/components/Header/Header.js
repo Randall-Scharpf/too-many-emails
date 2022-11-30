@@ -24,13 +24,17 @@ function Header() {
   return (
     <div className="header">
       <div className="header-left">
-        <IconButton>
+        {/* <IconButton>
           <MenuIcon />
-        </IconButton>
-        <img
+        </IconButton> */}
+        <a>
+        <img src="/images/2ME.png" /> 
+        <img src="/images/2ME_Wiggly.png" />
+        </a>
+        {/* <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzRceIIBz4GgeNszaN5SupI6p1SJE_Bzgk3Q&usqp=CAU"
           alt="gmail logo"
-        />
+        /> */}
       </div>
       <div className="header-middle">
         <SearchIcon />
