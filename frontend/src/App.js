@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
-import Header from "./components/Header/Header";
-import Sidebar from "./components/Sidebar/Sidebar";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Mail from "./components/Mail/Mail";
-import EmailList from "./components/EmailList/EmailList";
-import SendMail from "./components/SendMail/SendMail";
 import { useSelector } from "react-redux";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "./App.css";
+import EmailList from "./components/EmailList/EmailList";
+import Header from "./components/Header/Header";
+import LogInContainer from "./components/LogInContainer/LogInContainer";
+import Mail from "./components/Mail/Mail";
+import Navbar from "./components/Navbar/navbar";
+import SendMail from "./components/SendMail/SendMail";
+import Sidebar from "./components/Sidebar/Sidebar";
 import { selectSendMessageIsOpen } from "./features/mailSlice";
 import { selectUser } from "./features/userSlice";
-import Login from "./components/Login/Login";
-import Navbar from "./components/Navbar/navbar";
-import LogInContainer from "./components/LogInContainer/LogInContainer";
-import Login2 from "./components/Login2/Login";
-import Signup from "./components/Signup/Signup";
 import { db } from "./firebase";
-import { NavigateBefore } from "@material-ui/icons";
 
 // Added for testing
 import fetch from 'node-fetch';
@@ -55,7 +51,7 @@ function App() {
 
   return (
     <Router>
-      {!user ? (
+      {user ? (
         <div>
           <Navbar />
           <LogInContainer />

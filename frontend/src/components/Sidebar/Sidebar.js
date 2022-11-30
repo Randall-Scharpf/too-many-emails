@@ -10,21 +10,23 @@ import { useDispatch } from "react-redux";
 import { openSendMessage } from "../../features/mailSlice";
 import {useState} from "react";
 
-function Sidebar({ addresses }) {
-  const dispatch = useDispatch();
-  const [message, setMessage]=useState('');
+
+function Sidebar({ emails }) {
+    const dispatch = useDispatch();
+    const [message, setMessage]=useState('');
+    const addresses = ["address1", "address2"];
 
   const handleSubmit = event => {
     event.preventDefault()
-    //check if $message is okay 
+    //check if $message is okay
     //if so add to stack of emails
     //else error message
-    
+
     setMessage("")
     //setErrorMessage("error")
     //alert(`The name you entered was: ${message}`)
 
-    
+
   }
 
   return (
@@ -39,8 +41,8 @@ function Sidebar({ addresses }) {
 
 
       <form onSubmit={handleSubmit}>
-          
-          <input 
+
+          <input
             type = "text"
             placeholder="enter new address"
             id="message"
@@ -49,7 +51,7 @@ function Sidebar({ addresses }) {
             value={message}
           />
          </form>
-      
+
 
         {addresses.map((address)=>(
           <SidebarOption
@@ -57,9 +59,9 @@ function Sidebar({ addresses }) {
             />
         ))}
 
-      
 
-      
+
+
     </div>
   );
 }
