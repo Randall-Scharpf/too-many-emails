@@ -8,12 +8,11 @@ function SidebarOption({  title, selected }) {
 
   }
 
-  
+
   return (
-    <div className={`sidebarOption ${selected && "sidebarOption--active"}`}>
-      onClick = {openInbox}
-      <h3>{title}</h3>
-    </div>
+      <button className={`sidebarOption ${selected && "sidebarOption--active"}`} onClick={openInbox}>
+        <h3>{title}</h3>
+      </button>
   );
 }
 
