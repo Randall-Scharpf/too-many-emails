@@ -38,13 +38,17 @@ CREATE TABLE Address (
     FOREIGN KEY (UserID) REFERENCES Users (UserID)
 );
 
-/* An email sent by or received by our client.  */
+/* An email sent by or received by our client.
+
+   NOTE: Because sender and receiver addresses may or may not be addresses from
+   our client, they may not be in the Address table, so they are stored as a
+   simple strings representing the email address instead of foreign keys
+   referencing the Address table. */
 CREATE TABLE Email (
     EmailID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Subject TEXT, -- NULL if empty
+    Body TEXT, -- NULL if empty
     SenderAddress TEXT NOT NULL,
     ReceiverAddresses TEXT NOT NULL,
-    CCAddresses TEXT,
-    BCCAddresses TEXT,
-    Subject TEXT,
-    Body TEXT
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

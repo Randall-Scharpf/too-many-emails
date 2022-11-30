@@ -5,16 +5,6 @@ import express = require("express");
 
 import db from './db';
 
-/** Represents an HTTP response to populate and send back via res.  */
-interface Response {
-    /** HTTP status code.  */
-    code: number,
-    /** Error message for bad requests.  */
-    message?: string
-    /** Requested JSON content for fulfilled requests.  */
-    json?: object
-}
-
 
 /**
  * Register backend endpoints email address-related operations.
@@ -26,8 +16,8 @@ interface Response {
  */
 export function initAddressEndpoints(server: express.Application): void {
     server.get("/all-addresses", (req, res) => {
-        const email = req.body.email;
-        if (!email) {
+        const { email } = req.query;
+        if (!email || typeof email !== 'string') {
             return res.status(400).json({ code: 400, message: "No email supplied" });
         }
         getAddresses(email, (resp) => {
@@ -55,42 +45,37 @@ export function initAddressEndpoints(server: express.Application): void {
  */
 function getAddresses(
     email: string,
-    callback: (resp: Response) => void
+    callback: (resp) => void
 ): void {
 
     // First get the UserID from email address
-    db.get("SELECT UserID FROM Users WHERE email = ?",
-        [email],
-        (err: Error, row: { UserID: number }): void => {
-            if (err || !row) {
-                return callback({
-                    code: 400,
-                    message: `No user registered with email address ${email}!`
-                });
-
-            } else {
-                // Use the UserID to get all Addresses referencing that ID
-                db.all("SELECT EmailAddress FROM Address WHERE UserId = ?",
-                    [row.UserID],
-                    (err: Error, rows: Array<{ EmailAddress: string }>) => {
-                        if (err) {
-                            return callback({
-                                code: 500,
-                                message: `Error occurred trying to retrieve `
-                                    + `owned addresses for user ${email}.`
-                            });
-                        }
-
-                        // Respond with an array of email address strings
-                        return callback({
-                            code: 200,
-                            json: rows.map(row => row.EmailAddress)
-                        });
-                    }
-                );
-            }
+    getUserID(email, (UserID: number | null): void => {
+        if (UserID === null) {
+            return callback({
+                code: 400,
+                message: `No user registered with email address ${email}!`
+            });
         }
-    );
+
+        // Then get the addresses that are owned by that UserID
+        db.all("SELECT EmailAddress FROM Address WHERE UserID = ?", [UserID],
+            (err: Error, rows: Array<{ EmailAddress: string }>) => {
+                if (err) {
+                    return callback({
+                        code: 500,
+                        message: `Error occurred trying to retrieve `
+                            + `owned addresses for user ${email}.`
+                    });
+                }
+
+                // Populate response with an array of email address strings
+                return callback({
+                    code: 200,
+                    addresses: rows.map(row => row.EmailAddress)
+                });
+            }
+        );
+    });
 }
 
 
@@ -101,48 +86,94 @@ function getAddresses(
 function addAddress(
     email: string,
     address: string,
-    callback: (resp: Response) => void
+    callback: (resp) => void
 ): void {
 
     // First get the UserID from email address
+    getUserID(email, (UserID: number | null): void => {
+        if (UserID === null) {
+            return callback({
+                code: 400,
+                message: `No user registered with email address ${email}!`
+            });
+        }
+
+        // Then add an entry to the Address table referencing that UserID
+        db.run(
+            "INSERT INTO Address (EmailAddress, UserID) VALUES (?, ?)",
+            [address, UserID],
+            (err: Error) => {
+                if (err) {
+                    // Already registered
+                    if (err.message.includes("UNIQUE constraint failed")) {
+                        const message = `${address} already taken!`;
+                        console.error(message);
+                        return callback({
+                            code: 400,
+                            message: message
+                        })
+                    }
+                    // Some other error
+                    console.error(err.message);
+                    return callback({
+                        code: 500,
+                        message: err.message
+                    });
+                }
+                // Success
+                return callback({
+                    code: 200,
+                    message: `Added ${address} to user ${email}'s list`
+                });
+            }
+        );
+    });
+}
+
+
+/**
+ * Helper function for getting the UserID given the unique user email address.
+ * Callback is whatever code you want to run once you get the UserID. If null is
+ * passed in, that means the user was not found in the database.
+ */
+export function getUserID(
+    email: string,
+    callback: (UserID: number | null) => void
+): void {
+
     db.get("SELECT UserID FROM Users WHERE email = ?",
         [email],
-        (err: Error, row: { UserID: number }): void => {
+        (err: Error, row: { UserID: number } | undefined): void => {
             if (err || !row) {
-                return callback({
-                    code: 400,
-                    message: `No user registered with email address ${email}!`
-                });
+                console.error(err ? err.message : `User ${email} not found`);
+                callback(null);
             } else {
-                // Add an entry to Address table referencing that UserID
-                db.run(
-                    "INSERT INTO Address (EmailAddress, UserID) VALUES (?, ?)",
-                    [address, row.UserID],
-                    (err: Error) => {
-                        if (err) {
-                            // Already registered
-                            if (err.message.includes("UNIQUE constraint failed")) {
-                                const message = `${address} already taken!`;
-                                console.error(message);
-                                return callback({
-                                    code: 400,
-                                    message: message
-                                })
-                            }
-                            // Some other error
-                            console.error(err.message);
-                            return callback({
-                                code: 500,
-                                message: `Could not add ${address}.`
-                            });
-                        }
-                        // Success
-                        return callback({
-                            code: 200,
-                            json: {}
-                        });
-                    }
-                );
+                callback(row.UserID);
+            }
+        }
+    );
+}
+
+
+/**
+ * Helper function for getting the AddressID given the unique owned email
+ * address. Callback is whatever code you want to run once you get the
+ * AddressID. If null is passed in, that means the address was not found in the
+ * database.
+ */
+export function getAddressID(
+    address: string,
+    callback: (AddressID: number | null) => void
+): void {
+
+    db.get("SELECT AddressID FROM Address WHERE EmailAddress = ?",
+        [address],
+        (err: Error, row: { AddressID: number } | undefined): void => {
+            if (err || !row) {
+                console.error(err ? err.message : `Address ${address} not found`);
+                callback(null);
+            } else {
+                callback(row.AddressID);
             }
         }
     );

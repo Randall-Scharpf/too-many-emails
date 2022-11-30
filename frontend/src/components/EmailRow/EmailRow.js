@@ -15,11 +15,10 @@ function EmailRow({ id, title, subject, description, time }) {
   const openMail = () => {
     dispatch(
       selectMail({
-        id,
         title,
         subject,
         description,
-        time,
+        
       })
     );
     history.push("/mail");
@@ -28,18 +27,14 @@ function EmailRow({ id, title, subject, description, time }) {
   return (
     <div onClick={openMail} className="emailRow">
       <div className="emailRow-options">
-        <IconButton>
-          <LabelImportantOutlinedIcon />
-        </IconButton>
+        
       </div>
       <h3 className="emailRow-title">{title}</h3>
       <div className="emailRow-message">
         <h4>
           {subject}{" "}
-          <span className="emailRow-description"> - {description}</span>
         </h4>
       </div>
-      <p className="emailRow-time">{time}</p>
     </div>
   );
 }

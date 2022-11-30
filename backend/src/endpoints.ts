@@ -4,6 +4,7 @@
 import express from 'express';
 import * as db from './db';
 import logger from './middleware/logging';
+import cors = require('cors');
 
 export const server = express();
 
@@ -12,6 +13,7 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 
 server.use(logger);
+server.use(cors());
 
 
 /*==================*/
