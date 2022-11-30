@@ -12,72 +12,72 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import { selectSendMessageIsOpen } from "./features/mailSlice";
 import { selectUser } from "./features/userSlice";
 import { db } from "./firebase";
+import { Component } from "react";
 
-// Added for testing
-import fetch from 'node-fetch';
-async function test() {
-  const response = await fetch('http://localhost:80/address', {
-    method: 'post',
-    body: JSON.stringify({
-      email: "josie_bruin@ucla.edu",
-      address: "some_addressfkashga@lol.com"
-    }),
-    headers: {'Content-Type': 'application/json'}
-  });
-  const data = await response.json();
-  console.log(data);
-}
+const DUMMY_USER = "josie_bruin@ucla.edu"; // REMOVE LATER
 
-test().catch(console.error);
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: DUMMY_USER, // CHANGE LATER
+      address: null
+    };
+  }
 
-function App() {
-  const sendMessageIsOpen = useSelector(selectSendMessageIsOpen);
-  const user = useSelector(selectUser);
-  const [emails, setEmails] = useState([]);
+  // const sendMessageIsOpen = useSelector(selectSendMessageIsOpen);
+  // const user = useSelector(selectUser);
+  // const [emails, setEmails] = useState([]);
 
-  console.log("emails", emails);
-  useEffect(() => {
-    db.collection("emails")
-      .orderBy("timestamp", "desc")
-      .onSnapshot((snapshot) =>
-        setEmails(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            data: doc.data(),
-          }))
-        )
-      );
-  }, []);
+  // console.log("emails", emails);
+  // useEffect(() => {
+  //   db.collection("emails")
+  //     .orderBy("timestamp", "desc")
+  //     .onSnapshot((snapshot) =>
+  //       setEmails(
+  //         snapshot.docs.map((doc) => ({
+  //           id: doc.id,
+  //           data: doc.data(),
+  //         }))
+  //       )
+  //     );
+  // }, []);
 
-  return (
-    <Router>
-      {user ? (
-        <div>
-          <Navbar />
-          <LogInContainer />
+  setAddress(address) {
+    this.setState({address});
+  }
 
-        </div>
+  render() {
+    return (
+      <Router>
+        {false ? ( // REVERT TO this.state.user WHEN LOGIN WORKS
+          <div>
+            <Navbar />
+            <LogInContainer />
 
-      ) : (
-        <div className="app">
-          <Header />
-          <div className="app-body">
-            <Sidebar emails={emails} />
-            <Switch>
-              <Route path="/mail">
-                <Mail />
-              </Route>
-              <Route path="/" exact>
-                <EmailList emails={emails} />
-              </Route>
-            </Switch>
           </div>
 
-          {sendMessageIsOpen && <SendMail />}
-        </div>
-      )}
-    </Router>
-  );
+        ) : (
+          <div className="app">
+            <Header />
+            <div className="app-body">
+              <Sidebar user={DUMMY_USER} setAddress={(address) => this.setAddress(address)} />
+              <Switch>
+                <Route path="/mail">
+                  <Mail />
+                </Route>
+                <Route path="/" exact>
+                  <EmailList address={this.state.address} />
+                </Route>
+              </Switch>
+            </div>
+
+            {/* {sendMessageIsOpen && <SendMail />} */}
+          </div>
+        )}
+      </Router>
+    );
+  }
 }
 
 export default App;

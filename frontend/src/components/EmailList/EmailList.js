@@ -17,13 +17,11 @@ import { Component } from "react";
 import { getFromServer, postToServer } from "./../../helper";
 
 
-const TEMP_ADDRESS = 'throwaway2@lmao.com';
-
 class EmailList extends Component {
-  constructor(props) {
-    super(props);
+  constructor({ address }) {
+    super();
     this.state = {
-      address: TEMP_ADDRESS, // change to props.address later
+      address: address,
       mode: "inbox",
       emails_inbox: [],
       emails_outbox: []
