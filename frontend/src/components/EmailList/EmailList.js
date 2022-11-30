@@ -75,6 +75,25 @@ class EmailList extends Component {
         />
       </div>);
     }
+    else {
+      boxComponent = (<div>Work in progress!</div>);
+    }
+
+    return (
+      <div className="emailList">
+        <div className="emailList-sections">
+          <button onClick={() => this.clickInbox()}>
+            <Section Icon={InboxIcon} title="Inbox" color="red" />
+          </button>
+          <button onClick={() => this.clickSent()}>
+            <Section Icon={SendIcon} title="Sent" color="#1A73E8" selected onClick={this.clickSent} />
+          </button>
+          {/* <Section Icon={LocalOfferIcon} title="Promotions" color="green" /> */}
+        </div>
+
+        {boxComponent}
+      </div>
+    );
   }
 }
 
