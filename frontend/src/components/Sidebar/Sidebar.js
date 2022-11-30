@@ -8,60 +8,88 @@ import SidebarOption from "./SidebarOption";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { openSendMessage } from "../../features/mailSlice";
-import {useState} from "react";
+import { useState } from "react";
+import { getFromServer, postToServer } from "./../../helper";
+import { Component } from 'react';
 
-function Sidebar({ addresses }) {
-  const dispatch = useDispatch();
-  const [message, setMessage]=useState('');
 
-  const handleSubmit = event => {
-    event.preventDefault()
-    //check if $message is okay 
-    //if so add to stack of emails
-    //else error message
-    
-    setMessage("")
-    //setErrorMessage("error")
-    //alert(`The name you entered was: ${message}`)
 
-    
+class Sidebar extends Component {
+  constructor({ user, setAddress }) {
+    super();
+    this.props = {
+      user,
+      setAddress // (address) => { this.state.address = address; }
+    }
+    this.state = {
+      addresses: [],
+      message: ""
+    };
+    getFromServer('/all-addresses', {
+      email: this.props.user
+    },
+      data => this.setState({ addresses: data.addresses }));
   }
 
-  return (
-    <div className="sidebar">
-      <Button
-        className="sidebar-compose"
-        onClick={() => dispatch(openSendMessage())}
-        startIcon={<AddIcon fontSize="large" />}
-      >
-        Compose
-      </Button>
+  handleSubmit(event) {
+    event.preventDefault();
+
+    postToServer('/address', {
+      email: this.props.user,
+      address: this.state.message
+    },
+      data => alert(data.message));
+
+    //setErrorMessage("error")
+    //alert(`The name you entered was: ${message}`)
+    this.setState({
+      message: ""
+    });
+
+    getFromServer('/all-addresses', {
+      email: this.props.user
+    },
+      data => this.setState({ addresses: data.addresses }));
+  }
+
+  render() {
+    return (
+      <div className="sidebar">
+        <Button
+          className="sidebar-compose"
+          onClick={() => openSendMessage()}
+          startIcon={<AddIcon fontSize="large" />}
+        >
+          Compose
+        </Button>
 
 
-      <form onSubmit={handleSubmit}>
-          
-          <input 
-            type = "text"
-            placeholder="enter new address"
+        <form onSubmit={(event) => this.handleSubmit(event)}>
+
+          <input
+            type="text"
+            placeholder="enter new message"
             id="message"
             name="message"
-            onChange={(e) => setMessage(e.target.value)}
-            value={message}
+            onChange={(e) => this.setState({ message: e.target.value })}
+            value={this.state.message}
           />
-         </form>
-      
+        </form>
 
-        {addresses.map((address)=>(
+
+        {this.state.addresses.map((address) => (
           <SidebarOption
-            title = {address}
-            />
+            title={address}
+            setAddress={this.props.setAddress}
+          />
         ))}
 
       
 
-      
-    </div>
-  );
+
+      </div>
+    );
+  }
 }
 
 export default Sidebar;

@@ -14,45 +14,40 @@ import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import Section from "../Section/Section";
 import EmailRow from "../EmailRow/EmailRow";
 
-function EmailList({ emails }) {
-  return (
-    <div className="emailList">
-      {/* <div className="emailList-settings">
-        <div className="emailList-settingsLeft">
-          <Checkbox />
-          <IconButton>
-            <ArrowDropDownIcon />
-          </IconButton>
-          <IconButton>
-            <RedoIcon />
-          </IconButton>
-          <IconButton>
-            <MoreVertIcon />
-          </IconButton>
-        </div>
-        <div className="emailList-settingsRight">
-          <IconButton>
-            <ChevronLeftIcon />
-          </IconButton>
-          <IconButton>
-            <ChevronRightIcon />
-          </IconButton>
-          <IconButton>
-            <KeyboardHideIcon />
-          </IconButton>
-          <IconButton>
-            <SettingsIcon />
-          </IconButton>
-        </div>
-      </div> */}
-      <div className="emailList-sections">
-        <Section Icon={InboxIcon} title="Inbox" color="red" selected />
-        <Section Icon={SendIcon} title="Sent" color="#1A73E8" />
-        {/* <Section Icon={LocalOfferIcon} title="Promotions" color="green" /> */}
-      </div>
 
-      <div className="emailList-list">
-        {emails.map(({ id, data: { to, subject, message, timestamp } }) => (
+class EmailList extends Component {
+  constructor({ address }) {
+    super();
+    this.state = {
+      address: address,
+      mode: "inbox",
+      emails_inbox: [],
+      emails_outbox: []
+    };
+  }
+
+  clickInbox() {
+    this.setState({ mode: "inbox" });
+    getFromServer('/all-received-emails', {
+      address: this.state.address
+    },
+      data => this.setState({ emails_inbox: data.emails }));
+  }
+
+  clickSent() {
+    this.setState({ mode: "outbox" });
+    getFromServer('/all-sent-emails', {
+      address: this.state.address
+    },
+      data => this.setState({ emails_outbox: data.emails }));
+  }
+
+  //
+  render() {
+    let boxComponent;
+    if (this.state.mode === "inbox") {
+      boxComponent = (<div className="emailList-list">
+        {this.state.emails_inbox.map((email) => (
           <EmailRow
             id={id}
             key={id}
@@ -68,9 +63,9 @@ function EmailList({ emails }) {
           description="This is a DOPE"
           time="10pm"
         />
-      </div>
-    </div>
-  );
+      </div>);
+    }
+  }
 }
 
 export default EmailList;
