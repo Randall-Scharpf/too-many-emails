@@ -13,6 +13,8 @@ import SendIcon from "@material-ui/icons/Send";
 import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import Section from "../Section/Section";
 import EmailRow from "../EmailRow/EmailRow";
+import { Component } from "react";
+import { getFromServer, postToServer } from "./../../helper";
 
 
 class EmailList extends Component {
@@ -49,19 +51,27 @@ class EmailList extends Component {
       boxComponent = (<div className="emailList-list">
         {this.state.emails_inbox.map((email) => (
           <EmailRow
-            id={id}
-            key={id}
-            title={to}
-            subject={subject}
-            description={message}
-            time={new Date(timestamp?.seconds * 1000).toUTCString()}
+            title={email.from}
+            subject={email.subject}
           />
         ))}
         <EmailRow
           title="Twitch"
           subject="Hey fellow streamer!!"
-          description="This is a DOPE"
-          time="10pm"
+        />
+      </div>);
+    }
+    else if (this.state.mode === "outbox") {
+      boxComponent = (<div className="emailList-list">
+        {this.state.emails_outbox.map((email) => (
+          <EmailRow
+            title={email.to}
+            subject={email.subject}
+          />
+        ))}
+        <EmailRow
+          title="Twitch"
+          subject="Hey fellow streamer!! (but this is in outbox now)"
         />
       </div>);
     }
