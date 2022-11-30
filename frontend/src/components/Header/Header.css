@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    border-bottom: 1px solid whitesmoke;
+    border-bottom: 5px solid rgb(255, 31, 121);
 }
 
 .header-left {

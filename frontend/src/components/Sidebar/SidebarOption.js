@@ -1,13 +1,18 @@
 import React from "react";
 import "./SidebarOption.css";
 
-function SidebarOption({ Icon, title, number, selected }) {
+function SidebarOption({  title, selected }) {
+  const openInbox = () =>{
+    //inbox here
+    //change state
+
+  }
+
+
   return (
-    <div className={`sidebarOption ${selected && "sidebarOption--active"}`}>
-      <Icon />
-      <h3>{title}</h3>
-      <p>{number}</p>
-    </div>
+      <button className={`sidebarOption ${selected && "sidebarOption--active"}`} onClick={openInbox}>
+        <h3>{title}</h3>
+      </button>
   );
 }
 
