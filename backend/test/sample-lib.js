@@ -49,30 +49,21 @@ function postToServer(endpoint, data, resCallback, errCallback = () => { }) {
 
 // ==================== ADDED ==================== //
 
-const sqlite3 = require("sqlite3");
 const fetch = require('node-fetch');
 const moment = require('moment');
 
-const DB_FILE = process.env.DB_FILE || "./.data/sqlite.db";
 const PORT = parseInt(process.env.PORT) || 80;
-
-const db = new (sqlite3.verbose()).Database(DB_FILE);
-const base = `http://localhost:${PORT}`;
-
-
-/** Manually clear all tables.  */
-function clearDB() {
-    db.run("DELETE FROM KeyValue;");
-    db.run("DELETE FROM Users;");
-    db.run("DELETE FROM Tokens;");
-    db.run("DELETE FROM Address;");
-    db.run("DELETE FROM Email;");
-}
-
+const BASE = `http://localhost:${PORT}`;
 
 const RED = "\x1b[31m";
 const YEL = "\x1b[33m";
 const END = "\x1b[0m";
+
+
+/** Simple delay function.  */
+function sleep(ms) {
+    new Promise(r => setTimeout(r, ms));
+}
 
 
 /** Prefix a console.log() message with a timestamp.  */
@@ -83,6 +74,8 @@ function log(message, ...optionalParams) {
 
 /** Prefix a console.error(error.message) message with a timestamp.  */
 function errorMsg(error) {
+    if (!error)
+        return;
     console.error(`${YEL}[${moment().format('HH:mm:ss:SSSS')}]${END} ${RED}${error.message}${END}`);
 }
 
@@ -94,7 +87,7 @@ function errorMsg(error) {
 /** Make a GET request, expanding object params into URL-encoded parameters.  */
 function get(endpoint, params, callback) {
     const urlparams = new URLSearchParams(params).toString();
-    fetch(`${base}${endpoint}?${urlparams}`)
+    fetch(`${BASE}${endpoint}?${urlparams}`)
         .then(response => response.json())
         .then(data => callback(data))
     // .catch(errorMsg);
@@ -103,7 +96,7 @@ function get(endpoint, params, callback) {
 
 /** Make a POST request, using param body as the JSON body of the request.  */
 function post(endpoint, body, callback) {
-    fetch(`${base}${endpoint}`, {
+    fetch(`${BASE}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -143,4 +136,4 @@ class Email extends Model {
 }
 
 
-module.exports = { getFromServer, postToServer, clearDB, log, errorMsg, get, post, User, Email };
+module.exports = { getFromServer, postToServer, sleep, log, errorMsg, get, post, User, Email };

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsc --watch",
     "start": "npm install && nodemon dist/index.js",
-    "test": "node test/populate.js && node test/queries.js",
+    "test": "node test/reset.js && node test/populate.js && node test/queries.js",
     "reset": "rm -r dist/* && rm .data/* && npx tsc",
     "drop": "rm .data/*"
   },

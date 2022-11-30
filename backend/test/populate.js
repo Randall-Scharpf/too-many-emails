@@ -1,9 +1,27 @@
 // populate.js
 // Initialize the database with dummy data using endpoints.
-// If there is existing data in the database, it will be overwritten.
-// Fails if the database file does not exist.
+// Assume the database file is deleted prior, so this file will create a new
+// one. For some reason fs.unlinkSync encounters stupid resource busy error.
 
-const { clearDB, log, errorMsg, post, User, Email } = require("./sample-lib");
+const sqlite3 = require("sqlite3");
+const fs = require("node:fs");
+
+const { sleep, log, errorMsg, post, User, Email } = require("./sample-lib");
+
+// Ensure paths
+
+const DB_FILE = "./.data/sqlite.db";
+const SCHEMA_FILE = "./db-schema.sql"
+
+/** SQLite3 database client instance.  */
+const db = new (sqlite3.verbose()).Database(DB_FILE);
+
+if (!fs.existsSync("./.data")) {
+    fs.mkdirSync("./.data");
+}
+fs.openSync(DB_FILE, 'w');
+const schema = fs.readFileSync(SCHEMA_FILE).toString();
+db.exec(schema, errorMsg);
 
 // Dummy data
 
@@ -36,26 +54,26 @@ module.exports = { TEST_USERS, TEST_EMAILS, TEST_ADDRESS_LISTS };
 
 
 /** Code to run if executed as a script.  */
-function main() {
-    clearDB();
-
+async function main() {
     // Insert dummy data with endpoints
-    TEST_USERS.forEach(user => {
-        post('/create-user', user, data => {
+    for (const user of TEST_USERS) {
+        post('/create-user', user, async (data) => {
             if (data.code === 200)
                 log(`Created user: ${user.email}`);
             else
                 errorMsg(data);
         });
-    });
-    TEST_EMAILS.forEach(email => {
-        post('/email', email, data => {
+        await sleep(1000);
+    }
+    for (const email of TEST_EMAILS) {
+        post('/email', email, async (data) => {
             log(`Sent email from ${email.from} to ${email.to}`);
         });
-    });
+        await sleep(1000);
+    }
 }
 
 
 if (require.main === module)
-    main();
+    main().catch(console.error);
 
