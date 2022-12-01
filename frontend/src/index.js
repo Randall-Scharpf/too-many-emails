@@ -1,12 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import '../node_modules/font-awesome/css/font-awesome.min.css';
 import App from './App';
 import { store } from './app/store';
-import { Provider } from 'react-redux';
+import { postToServer } from './helper';
+import './index.css';
 import * as serviceWorker from './serviceWorker';
-import '../node_modules/font-awesome/css/font-awesome.min.css'; 
-import { BrowserRouter } from 'react-router-dom';
+
+// Upon starting the application, log out all users from the database.
+// This fixes the 'already logged in' errors caused by attempting to re-login to
+// a user that was already logged in prior to React automatically restarting the
+// application.
+postToServer("/logout-all-users", {}, (data) => {
+    console.log(data.message);
+});
 
 ReactDOM.render(
   <React.StrictMode>
