@@ -11,6 +11,7 @@
     - [POST `/login-user`](#post-login-user)
     - [POST `/logout-user`](#post-logout-user)
     - [POST `/change-password`](#post-change-password)
+  - [POST `/logout-all-users`](#post-logout-all-users)
   - [Owned Addresses API](#owned-addresses-api)
     - [GET `/all-addresses`](#get-all-addresses)
     - [POST `/address`](#post-address)
@@ -201,6 +202,22 @@ Example response JSON:
 {
   "code": 200,
   "message": "Success"
+}
+```
+
+
+## POST `/logout-all-users`
+
+Log out all users by deleting all authentication tokens in the database. This was a necessary workaround for fixing the 'already logged in errors' when React would re-render the application starting from the login page and not let us log back into the same test user.
+
+This endpoint does not require any content in the request body.
+
+Example JSON response:
+
+```json
+{
+  "code": 200,
+  "message": "Successfully logged out all users"
 }
 ```
 
