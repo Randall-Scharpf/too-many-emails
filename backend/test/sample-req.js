@@ -13,6 +13,8 @@ server.postToServer("/db-post", { key: 'coolest' }, console.log, console.log);
 server.postToServer("/db-post", { key: 'cooler' }, console.log, console.log);
 server.postToServer("/db-post", { key: 'coolest', value: 'stuffed' }, console.log, console.log);
 
+// ================================================== //
+
 // authentication endpoints
 server.postToServer("/create-user", { email: DUMMY_USER, pw: '12345678' }, console.log, console.log);
 server.postToServer("/login-user", { email: DUMMY_USER, pw: '12345678' }, (res) => {
@@ -25,10 +27,7 @@ server.postToServer("/login-user", { email: DUMMY_USER, pw: '12345678' }, (res) 
 server.postToServer("/address", { email: DUMMY_USER, address: "throwaway1@lmao.com" }, console.log, console.error);
 server.postToServer("/address", { email: DUMMY_USER, address: "throwaway2@lmao.com" }, console.log, console.error);
 server.postToServer("/address", { email: DUMMY_USER, address: "throwaway3@lmao.com" }, console.log, console.error);
-
-// TODO: this doesn't work because getFromServer only uses params instead of body
-// server.getFromServer("/all-addresses", { email: DUMMY_USER }, console.log,
-// console.error);
+server.getFromServer("/all-addresses", { email: DUMMY_USER }, console.log, console.error);
 
 // dummy emails to populate database
 const DUMMY_EMAILS = [
@@ -58,10 +57,14 @@ const DUMMY_EMAILS = [
     }
 ];
 
+/** Pretty print nested objects with JSON formatting.  */
+function prettyPrint(object) {
+    console.log(JSON.stringify(object, null, 2));
+}
+
 // email endpoints
 for (const dummyEmail of DUMMY_EMAILS) {
     server.postToServer("/email", { ...dummyEmail }, console.log, console.error);
 }
-
-// TODO: this doesn't work because getFromServer only uses params instead of body
-// server.getFromServer("/all-sent-emails", { address: "throwaway2@lmao.com" }, console.log, console.error);
+server.getFromServer("/all-sent-emails", { address: "throwaway2@lmao.com" }, prettyPrint, console.error);
+server.getFromServer("/all-received-emails", { address: "throwaway2@lmao.com" }, prettyPrint, console.error);
