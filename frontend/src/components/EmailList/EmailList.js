@@ -7,9 +7,8 @@ import RedoIcon from "@material-ui/icons/Redo";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import KeyboardHideIcon from "@material-ui/icons/KeyboardHide";
-import SettingsIcon from "@material-ui/icons/Settings";
-import InboxIcon from "@material-ui/icons/Inbox";
-import SendIcon from "@material-ui/icons/Send";
+// import InboxIcon from "@material-ui/icons/Inbox";
+// import SendIcon from "@material-ui/icons/Send";
 import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import Section from "../Section/Section";
 import EmailRow from "../EmailRow/EmailRow";
@@ -85,14 +84,17 @@ class EmailList extends Component {
       <div className="emailList">
         
         <div className="emailList-sections">
-          <button onClick={() => this.clickInbox()}>
-            <Section Icon={InboxIcon} title="Inbox" color="red" />
+          <button className="button" onClick={() => this.clickInbox()}>
+            <Section Cover="/images/Inbox_Open.png" Reveal="/images/Inbox_Closed.png" title="Inbox" color="red" />
+            <p>Inbox</p>
           </button>
-          <button onClick={() => this.clickSent()}>
-            <Section Icon={SendIcon} title="Sent" color="#1A73E8" selected onClick={this.clickSent} />
+          <button className="button" onClick={() => this.clickSent()}>
+            <Section Cover="/images/Outbox_Open.png" Reveal="/images/Outbox_Closed.png" stitle="Sent" color="#1A73E8" />
+            <p>Outbox</p>
           </button>
           {/* <Section Icon={LocalOfferIcon} title="Promotions" color="green" /> */}
         </div>
+
 
         {boxComponent}
       </div>
