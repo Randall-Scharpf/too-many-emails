@@ -38,7 +38,16 @@ class Sidebar extends Component {
       email: this.props.user,
       address: this.state.message
     },
-      data => alert(data.message));
+      data => {
+        if( data.code === 400){
+          //render error code
+        }
+        else{
+          const curr_addresses = this.state.addresses.slice();
+          curr_addresses.push(this.state.message);
+          this.setState(curr_addresses);
+        }
+      });
 
     //setErrorMessage("error")
     //alert(`The name you entered was: ${message}`)
