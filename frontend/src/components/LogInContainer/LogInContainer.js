@@ -25,6 +25,8 @@ class LogInContainer extends Component {
     this.state.loginContainerRef.current.classList.toggle("active");
   }
 
+  // Using hella alert()s but honestly there's no time for fancy flash
+  // notifications and such at this point so eh.
   registerUser(email, pw) {
     postToServer("/create-user", { email, pw }, data => {
       // User registered: go back to login mode
@@ -32,10 +34,17 @@ class LogInContainer extends Component {
         this.setState({ login: true });
         // Not sure what this is for but apparently it does the animation thing
         this.state.loginContainerRef.current.classList.toggle("active");
+        alert(`Successfully created your new user ${email}!`);
       }
-      // Registration failed
+
+      // Email is already taken by another user
+      else if (data.code === 400) {
+        alert(`Another user is already registered with ${email}!`);
+      }
+
+      // No other error has been defined but who knows
       else {
-        alert(JSON.stringify(data)); // TEMP: in case of error
+        alert(`An unexpected error occurred: ${JSON.stringify(data)}`);
       }
     });
   }
