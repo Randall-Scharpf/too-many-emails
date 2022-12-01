@@ -113,10 +113,11 @@ class Sidebar extends Component {
         </form>
 
 
-        {this.state.addresses.map((address) => (
+        {this.state.addresses.map((address, index) => (
           <SidebarOption
             title={address}
             setAddress={a => this.props.setAddress(a)}
+            key={index}
           />
         ))}
 
