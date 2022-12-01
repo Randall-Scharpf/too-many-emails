@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { withRouter } from "react-router-dom";
 import "./EmailRow.css";
 
 class EmailRow extends Component {
@@ -14,8 +15,7 @@ class EmailRow extends Component {
   }
 
   openMail() {
-    // TEMP: proof of concept
-    alert(`${JSON.stringify(this.props)}`);
+    this.props.history.push("/mail");
   }
 
   render() {
@@ -35,4 +35,4 @@ class EmailRow extends Component {
   }
 }
 
-export default EmailRow;
+export default withRouter(EmailRow);

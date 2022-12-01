@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import EmailList from "./components/EmailList/EmailList";
 import Header from "./components/Header/Header";
 import LogInContainer from "./components/LogInContainer/LogInContainer";
+import Mail from "./components/Mail/Mail";
 import Navbar from "./components/Navbar/navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
 
@@ -41,7 +43,14 @@ class App extends Component {
                 selectedAddress={this.state.address}
                 setAddress={(address) => this.setAddress(address)}
               />
-              <EmailList address={this.state.address} />
+              <Switch>
+                <Route path={"/"} exact>
+                  <EmailList address={this.state.address} />
+                </Route>
+                <Route path={"/mail"}>
+                  <Mail />
+                </Route>
+              </Switch>
             </div>
           </div>
         )}
