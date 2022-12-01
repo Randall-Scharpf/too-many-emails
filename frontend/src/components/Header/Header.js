@@ -24,9 +24,6 @@ function Header() {
   return (
     <div className="header">
       <div className="header-left">
-        {/* <IconButton>
-          <MenuIcon />
-        </IconButton> */}
         <a>
         <img src="/images/2ME.png" /> 
         <img src="/images/2ME_Wiggly.png" />
@@ -42,15 +39,6 @@ function Header() {
         <ArrowDropDownIcon className="header-inputCaret" />
       </div>
       <div className="header-right">
-        <IconButton>
-          <HelpOutlineIcon />
-        </IconButton>
-        <IconButton>
-          <NotificationsIcon />
-        </IconButton>
-        <IconButton>
-          <AppsIcon />
-        </IconButton>
         <Avatar onClick={signOut} src={user?.photoUrl} />
       </div>
     </div>
