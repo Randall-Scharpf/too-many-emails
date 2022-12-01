@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./EmailList.css";
 import Section from "../Section/Section";
 import EmailRow from "../EmailRow/EmailRow";
+import Compose from "../Compose/Compose"; 
 import { Component } from "react";
 import { getFromServer, postToServer } from "./../../helper";
 
@@ -71,7 +72,7 @@ class EmailList extends Component {
       </div>);
     }
     else {
-      boxComponent = (<div>Work in progress!</div>);
+      boxComponent = <Compose/>;
     }
 
     return (
