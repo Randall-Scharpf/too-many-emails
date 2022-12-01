@@ -8,10 +8,14 @@ import { getFromServer, postToServer } from "./../../helper";
 
 
 class EmailList extends Component {
-  constructor({ address }) {
-    super();
+  /**
+   * props: {
+   *    address: string | null
+   * }
+   */
+  constructor(props) {
+    super(props);
     this.state = {
-      address: address,
       mode: "inbox",
       emails_inbox: [],
       emails_outbox: []
@@ -19,25 +23,26 @@ class EmailList extends Component {
   }
 
   clickInbox() {
-    this.setState({ mode: "inbox" });
-    getFromServer('/all-received-emails', {
-      address: this.state.address
-    },
-      data => this.setState({ emails_inbox: data.emails }));
+      this.setState({ mode: "inbox" });
+      const currentAddress = this.props.address;
+      getFromServer('/all-received-emails', {
+          address: currentAddress
+        },
+        data => this.setState({ emails_inbox: data.emails }));
   }
 
   clickSent() {
-    this.setState({ mode: "outbox" });
-    getFromServer('/all-sent-emails', {
-      address: this.state.address
-    },
-      data => this.setState({ emails_outbox: data.emails }));
+      this.setState({ mode: "outbox" });
+      const currentAddress = this.props.address;
+      getFromServer('/all-sent-emails', {
+          address: currentAddress
+        },
+        data => this.setState({ emails_outbox: data.emails }));
   }
 
   clickCompose()
   {
     this.setState({ mode: "compose" });
-    
   }
 
   //

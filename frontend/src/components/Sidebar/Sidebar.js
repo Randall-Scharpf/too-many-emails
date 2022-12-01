@@ -1,26 +1,26 @@
-import { Button, IconButton } from "@material-ui/core";
+import { Button } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import React from "react";
 import "./Sidebar.css";
-import AddIcon from "@material-ui/icons/Add";
 
 import SidebarOption from "./SidebarOption";
 
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { openSendMessage } from "../../features/mailSlice";
-import { useState } from "react";
-import { getFromServer, postToServer } from "./../../helper";
 import { Component } from 'react';
+import { openSendMessage } from "../../features/mailSlice";
+import { getFromServer, postToServer } from "./../../helper";
 
 
 
 class Sidebar extends Component {
-  constructor({ user, setAddress }) {
-    super();
-    this.props = {
-      user,
-      setAddress // (address) => { this.state.address = address; }
-    }
+  /**
+   * props: {
+   *    user: string | null,
+   *    setAddress: (address: string | null) => void,
+   *    startingAddresses: string[]
+   * }
+   */
+  constructor(props) {
+    super(props);
     this.state = {
       addresses: [],
       message: ""
@@ -110,7 +110,7 @@ class Sidebar extends Component {
         {this.state.addresses.map((address) => (
           <SidebarOption
             title={address}
-            setAddress={this.props.setAddress}
+            setAddress={a => this.props.setAddress(a)}
           />
         ))}
 
