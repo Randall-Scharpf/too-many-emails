@@ -36,7 +36,11 @@ class App extends Component {
           <div className="app">
             <Header />
             <div className="app-body">
-              <Sidebar user={this.state.user} setAddress={(address) => this.setAddress(address)} />
+              <Sidebar
+                user={this.state.user}
+                selectedAddress={this.state.address}
+                setAddress={(address) => this.setAddress(address)}
+              />
               <EmailList address={this.state.address} />
             </div>
           </div>
