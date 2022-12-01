@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { postToServer } from '../../helper';
 import "./Login.css";
 
@@ -28,10 +28,23 @@ class Login extends Component {
       data => {
         if (data.code === 200) {
           this.props.setUser(this.state.user);
-        } else {
-          alert(JSON.stringify(data));
         }
-      })
+
+        // Determine what kind of 400 it is
+        else if (data.code === 400) {
+          // Honestly just let the user pass anyway lol
+          if (data.token === "Already logged in!") {
+            this.props.setUser(this.state.user);
+          }
+          else if (data.token === "Email/Password combination invalid!") {
+            alert("Your email and/or password is incorrect!");
+          }
+          // Just in case
+          else {
+            alert(`An unexpected error occurred: ${JSON.stringify(data)}`);
+          }
+        }
+      });
 
   }
   render() {
