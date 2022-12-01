@@ -15,6 +15,7 @@ class Sidebar extends Component {
   /**
    * props: {
    *    user: string | null,
+   *    selectedAddress: string | null,
    *    setAddress: (address: string | null) => void
    * }
    */
@@ -115,6 +116,7 @@ class Sidebar extends Component {
         {this.state.addresses.map((address, index) => (
           <SidebarOption
             title={address}
+            selected={address === this.props.selectedAddress}
             setAddress={a => this.props.setAddress(a)}
             key={index}
           />
