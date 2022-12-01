@@ -5,9 +5,13 @@ import "./Login.css";
 
 
 class Login extends Component {
-  constructor({ setUser }) {
-    super();
-    this.props = { setUser };
+  /**
+   * props: {
+   *    setUser: (user: string) => void
+   * }
+   */
+  constructor(props) {
+    super(props);
     this.state = {
       user: "",
       password: "",

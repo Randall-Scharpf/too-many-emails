@@ -1,30 +1,36 @@
-import { Button, IconButton } from "@material-ui/core";
+import { Button } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import React from "react";
 import "./Sidebar.css";
-import AddIcon from "@material-ui/icons/Add";
 
 import SidebarOption from "./SidebarOption";
 
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { openSendMessage } from "../../features/mailSlice";
-import { useState } from "react";
-import { getFromServer, postToServer } from "./../../helper";
 import { Component } from 'react';
+import { openSendMessage } from "../../features/mailSlice";
+import { getFromServer, postToServer } from "./../../helper";
 
 
 
 class Sidebar extends Component {
-  constructor({ user, setAddress }) {
-    super();
-    this.props = {
-      user,
-      setAddress // (address) => { this.state.address = address; }
-    }
+  /**
+   * props: {
+   *    user: string | null,
+   *    setAddress: (address: string | null) => void,
+   *    startingAddresses: string[]
+   * }
+   */
+  constructor(props) {
+    super(props);
     this.state = {
-      addresses: [],
+      addresses: props.startingAddresses || [],
       message: ""
     };
+  }
+
+  // This method is called immediately after a component is mounted
+  // Moving the GET request out of the constructor fixes the warning
+  // 'Can't call setState on a component that is not yet mounted.'
+  componentDidMount() {
     getFromServer('/all-addresses', {
       email: this.props.user
     },
@@ -96,21 +102,22 @@ class Sidebar extends Component {
         <form onSubmit={(event) => this.handleSubmit(event)}>
 
           <input
-            pattern= ".+@2me\.com" required
+            pattern=".+@2me\.com" required
             type="text"
             placeholder="@2me.com"
             id="message"
             name="message"
-            onChange={(e) => this.setState({ message: e.target.value}) }
+            onChange={(e) => this.setState({ message: e.target.value })}
             value={this.state.message}
           />
         </form>
 
 
-        {this.state.addresses.map((address) => (
+        {this.state.addresses.map((address, index) => (
           <SidebarOption
             title={address}
-            setAddress={this.props.setAddress}
+            setAddress={a => this.props.setAddress(a)}
+            key={index}
           />
         ))}
 
