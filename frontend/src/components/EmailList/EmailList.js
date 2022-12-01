@@ -1,15 +1,5 @@
-import { Checkbox, IconButton } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import "./EmailList.css";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import RedoIcon from "@material-ui/icons/Redo";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import KeyboardHideIcon from "@material-ui/icons/KeyboardHide";
-// import InboxIcon from "@material-ui/icons/Inbox";
-// import SendIcon from "@material-ui/icons/Send";
-import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import Section from "../Section/Section";
 import EmailRow from "../EmailRow/EmailRow";
 import { Component } from "react";
@@ -43,6 +33,12 @@ class EmailList extends Component {
       address: this.state.address
     },
       data => this.setState({ emails_outbox: data.emails }));
+  }
+
+  clickCompose()
+  {
+    this.setState({ mode: "compose" });
+    
   }
 
   //
@@ -85,12 +81,16 @@ class EmailList extends Component {
         
         <div className="emailList-sections">
           <button className="button" onClick={() => this.clickInbox()}>
-            <Section Cover="/images/Inbox_Open.png" Reveal="/images/Inbox_Closed.png" title="Inbox" color="red" />
+            <Section Cover="/images/Inbox_Open.png" Reveal="/images/Inbox_Closed.png" title="Inbox" color="green" />
             <p>Inbox</p>
           </button>
           <button className="button" onClick={() => this.clickSent()}>
-            <Section Cover="/images/Outbox_Open.png" Reveal="/images/Outbox_Closed.png" stitle="Sent" color="#1A73E8" />
+            <Section Cover="/images/Outbox_Open.png" Reveal="/images/Outbox_Closed.png" title="Sent" color="orange" />
             <p>Outbox</p>
+          </button>
+          <button className="button" onClick={() => this.clickCompose()}>
+            <Section Cover="/images/Outbox_Closed.png" Reveal="/images/Inbox_Open.png" title="Compose" color="pink" />
+            <p>Compose</p>
           </button>
           {/* <Section Icon={LocalOfferIcon} title="Promotions" color="green" /> */}
         </div>

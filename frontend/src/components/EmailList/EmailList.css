@@ -7,7 +7,7 @@
 .emailList-sections {
     position: sticky;
     top: 0;
-    max-width: 200px; 
+    max-width: 350px; 
     display: flex;
     /* border-bottom: 1px solid whitesmoke; */
     background-color: white;
