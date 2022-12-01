@@ -41,6 +41,7 @@ class Sidebar extends Component {
       data => {
         if( data.code === 400){
           //render error code
+          alert("invalid email")
         }
         else{
           const curr_addresses = this.state.addresses.slice();
