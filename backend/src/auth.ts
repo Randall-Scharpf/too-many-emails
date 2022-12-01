@@ -19,6 +19,7 @@ import db from "./db";
  *      /login-user
  *      /logout-user
  *      /change-password
+ *      /logout-all-users <-- ADDED THIS TO STOP 'already logged in' ERRORS
  */
 export function initAuthEndpoints(server: express.Application): void {
     server.post("/create-user", (req, res) => {
@@ -38,6 +39,11 @@ export function initAuthEndpoints(server: express.Application): void {
     });
     server.post("/change-password", (req, res) => {
         setPassword(req.body.email, req.body.token, req.body.pw, (resp) => {
+            res.status(resp.code).json(resp);
+        });
+    });
+    server.post("/logout-all-users", (req, res) => {
+        logoutAllUsers((resp) => {
             res.status(resp.code).json(resp);
         });
     });
@@ -122,6 +128,21 @@ function setPassword(email: string, token: string, password: string, callback: (
     });
 }
 
+function logoutAllUsers(callback: (resp: { code: number, message: string }) => void): void {
+    db.run("DELETE FROM Tokens;", (err: Error) => {
+        if (err) {
+            callback({
+                code: 500,
+                message: "An error occurred trying to log out all users"
+            })
+        } else {
+            callback({
+                code: 200,
+                message: "Successfully logged out all users"
+            })
+        }
+    });
+}
 
 /**
  * Verify a token associated with a particular email.
