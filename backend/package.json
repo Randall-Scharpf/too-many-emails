@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "tsc --watch",
     "start": "npm install && nodemon dist/index.js",
-    "test": "node test/sample-req.js",
+    "populate": "node test/clear.js && node test/sample-req.js && node test/add-addresses.js",
     "reset": "rm -r dist/* && rm .data/* && npx tsc",
-    "drop": "rm .data/*"
+    "clear": "node test/clear.js"
   },
   "keywords": [],
   "author": "",

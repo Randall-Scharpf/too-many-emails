@@ -1,26 +1,23 @@
 .emailList {
     flex: 1;
     overflow: scroll;
-}
-
-.emailList-settings {
-    position: sticky;
-    top: 0;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid whitesmoke;
-    background-color: white;
-    z-index: 999;
-    padding-right: 10px;
+    outline: none;
 }
 
 .emailList-sections {
     position: sticky;
     top: 0;
+    max-width: 200px; 
     display: flex;
-    border-bottom: 1px solid whitesmoke;
+    /* border-bottom: 1px solid whitesmoke; */
     background-color: white;
     z-index: 999;
+    background-color: transparent; 
+    outline: none;
+}
+.emailList-sections > button{
+    background-color: transparent; 
+    border: none;
 }
 
 
@@ -36,23 +33,4 @@
    
 }
 
-@media only screen and (max-width: 500px) {   
-    
-    .emailList-settingsLeft > .MuiIconButton-root{
-        padding-left: 3px;
-        padding-right: 3px;
-    }
-
-    .emailList-settingsRight > .MuiIconButton-root{
-        padding-left: 3px;
-        padding-right: 3px;
-    }
-
-    .emailList-settingsLeft{
-        margin-left: 10px;
-    }
-
-    .emailList-settingsRight{
-        margin-right: 10px;
-    }
-}
+ 

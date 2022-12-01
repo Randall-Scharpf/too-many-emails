@@ -13,7 +13,6 @@ CREATE TABLE KeyValue (
    NOTE: Inconsistency in naming due to trying to not break Randall's existing
    auth.ts.  */
 CREATE TABLE Users (
-    UserID INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE NOT NULL,
     pwhash TEXT NOT NULL, -- SHA-256
     salt TEXT NOT NULL -- 8 random ASCII
@@ -23,7 +22,6 @@ CREATE TABLE Users (
    NOTE: Inconsistency in naming due to trying not to break Randall's existing
    auth.ts.  */
 CREATE TABLE Tokens (
-    TokenID INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT NOT NULL,
     token TEXT NOT NULL,
     expiry INTEGER NOT NULL
@@ -32,10 +30,8 @@ CREATE TABLE Tokens (
 /* Addresses that users create within their account.  These are the throwaway
    email addresses intended for use.  */
 CREATE TABLE Address (
-    AddressID INTEGER PRIMARY KEY AUTOINCREMENT,
     EmailAddress TEXT UNIQUE NOT NULL,
-    UserID INTEGER,
-    FOREIGN KEY (UserID) REFERENCES Users (UserID)
+    UserEmail TEXT NOT NULL -- "references" Users (email)
 );
 
 /* An email sent by or received by our client.
@@ -45,7 +41,6 @@ CREATE TABLE Address (
    simple strings representing the email address instead of foreign keys
    referencing the Address table. */
 CREATE TABLE Email (
-    EmailID INTEGER PRIMARY KEY AUTOINCREMENT,
     Subject TEXT, -- NULL if empty
     Body TEXT, -- NULL if empty
     SenderAddress TEXT NOT NULL,

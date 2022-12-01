@@ -1,7 +1,7 @@
 const http = require('http');
 const SERVER_URL = 'localhost';
 
-function getFromServer(endpoint, data, resCallback, errCallback = () => {}) {
+function getFromServer(endpoint, data, resCallback, errCallback = () => { }) {
     data = new URLSearchParams(data).toString();
     const req = http.request({
         hostname: SERVER_URL, path: endpoint + '?' + data, method: 'GET',
@@ -21,7 +21,7 @@ function getFromServer(endpoint, data, resCallback, errCallback = () => {}) {
     return SERVER_URL + endpoint + '?' + data;
 }
 
-function postToServer(endpoint, data, resCallback, errCallback = () => {}) {
+function postToServer(endpoint, data, resCallback, errCallback = () => { }) {
     data = JSON.stringify(data);
     const req = http.request({
         hostname: SERVER_URL, path: endpoint, method: 'POST',
@@ -46,4 +46,6 @@ function postToServer(endpoint, data, resCallback, errCallback = () => {}) {
 // var requestUrl = postToServer("/echo-post", { name: 'John Doe', job: 'Content Writer' }, console.log, console.log);
 // var requestUrl = getFromServer("/echo-get", { name: 'Mary Ann', job: 'Content Editor' }, console.log, console.log);
 
-module.exports = { getFromServer, postToServer }
+const DUMMY_USER = "josie_bruin@ucla.edu";
+
+module.exports = { getFromServer, postToServer, DUMMY_USER }
