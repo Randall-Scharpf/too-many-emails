@@ -1,6 +1,5 @@
 const server = require("./sample-lib");
-
-const DUMMY_USER = 'josie_bruin@ucla.edu';
+const { DUMMY_USER } = require("./sample-lib");
 
 // test endpoints: reply with what they're given
 server.getFromServer("/echo-get", { name: 'Mary Ann', job: 'Content Editor' }, console.log, console.log);
@@ -22,12 +21,6 @@ server.postToServer("/login-user", { email: DUMMY_USER, pw: '12345678' }, (res) 
     server.postToServer("/change-password", { email: DUMMY_USER, token: res.token, pw: '12345678' }, console.log, console.log);
     server.postToServer("/logout-user", { email: DUMMY_USER, token: res.token }, console.log, console.log);
 }, console.log);
-
-// address endpoints
-server.postToServer("/address", { email: DUMMY_USER, address: "throwaway1@lmao.com" }, console.log, console.error);
-server.postToServer("/address", { email: DUMMY_USER, address: "throwaway2@lmao.com" }, console.log, console.error);
-server.postToServer("/address", { email: DUMMY_USER, address: "throwaway3@lmao.com" }, console.log, console.error);
-server.getFromServer("/all-addresses", { email: DUMMY_USER }, console.log, console.error);
 
 // dummy emails to populate database
 const DUMMY_EMAILS = [
