@@ -23,7 +23,7 @@ class Sidebar extends Component {
     }
     this.state = {
       addresses: [],
-      message: "@2me.com"
+      message: ""
     };
     getFromServer('/all-addresses', {
       email: this.props.user
@@ -40,6 +40,8 @@ class Sidebar extends Component {
   }
   handleSubmit(event) {
     event.preventDefault();
+    const submission = this.state.message;
+
     if (this.validateAddress()) {
 
 
@@ -54,7 +56,7 @@ class Sidebar extends Component {
           }
           else {
             const curr_addresses = this.state.addresses.slice();
-            curr_addresses.push(this.state.message);
+            curr_addresses.push(submission);
             this.setState({ addresses: curr_addresses });
           }
         });
@@ -94,11 +96,12 @@ class Sidebar extends Component {
         <form onSubmit={(event) => this.handleSubmit(event)}>
 
           <input
+            pattern= ".+@2me\.com" required
             type="text"
             placeholder="@2me.com"
             id="message"
             name="message"
-            onChange={(e) => this.setState({ message: e.target.value})}
+            onChange={(e) => this.setState({ message: e.target.value}) }
             value={this.state.message}
           />
         </form>
