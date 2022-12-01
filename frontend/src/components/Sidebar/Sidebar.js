@@ -23,32 +23,52 @@ class Sidebar extends Component {
     }
     this.state = {
       addresses: [],
-      message: ""
+      message: "@2me.com"
     };
     getFromServer('/all-addresses', {
       email: this.props.user
     },
-      data => this.setState({ addresses: data.addresses }));
+      data => {
+        if (data.code === 200)
+          this.setState({ addresses: data.addresses });
+      });
   }
 
+  validateAddress() {
+    return true;
+
+  }
   handleSubmit(event) {
     event.preventDefault();
+    if (this.validateAddress()) {
 
-    postToServer('/address', {
-      email: this.props.user,
-      address: this.state.message
-    },
-      data => {
-        if( data.code === 400){
-          //render error code
-          alert("invalid email")
-        }
-        else{
-          const curr_addresses = this.state.addresses.slice();
-          curr_addresses.push(this.state.message);
-          this.setState(curr_addresses);
-        }
-      });
+
+      postToServer('/address', {
+        email: this.props.user,
+        address: this.state.message
+      },
+        data => {
+          if (data.code === 400) {
+            //render error code
+            alert(data.message);
+          }
+          else {
+            const curr_addresses = this.state.addresses.slice();
+            curr_addresses.push(this.state.message);
+            this.setState({ addresses: curr_addresses });
+          }
+        });
+
+      getFromServer('/all-addresses', {
+        email: this.props.user
+      },
+        data => {
+          if (data.code === 200) this.setState({ addresses: data.addresses });
+        });
+    }
+    else {
+      alert("invalid address")
+    }
 
     //setErrorMessage("error")
     //alert(`The name you entered was: ${message}`)
@@ -56,10 +76,7 @@ class Sidebar extends Component {
       message: ""
     });
 
-    getFromServer('/all-addresses', {
-      email: this.props.user
-    },
-      data => this.setState({ addresses: data.addresses }));
+
   }
 
   render() {
@@ -78,10 +95,10 @@ class Sidebar extends Component {
 
           <input
             type="text"
-            placeholder="enter new message"
+            placeholder="@2me.com"
             id="message"
             name="message"
-            onChange={(e) => this.setState({ message: e.target.value })}
+            onChange={(e) => this.setState({ message: e.target.value})}
             value={this.state.message}
           />
         </form>
