@@ -3,6 +3,11 @@ import "./Signup.css";
 
 
 class Signup extends Component {
+  /**
+   * props: {
+   *    registerUser: (email: string, pw: string) => void
+   * }
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -20,9 +25,8 @@ class Signup extends Component {
     }
     // Register the user
     else {
-      alert(`TODO: register user ${this.state.user}`);
+      this.props.registerUser(this.state.user, this.state.password);
     }
-
   }
 
   render() {
