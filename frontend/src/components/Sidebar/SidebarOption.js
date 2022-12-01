@@ -1,11 +1,9 @@
 import React from "react";
 import "./SidebarOption.css";
 
-function SidebarOption({  title, selected }) {
+function SidebarOption({  title, selected, setAddress }) {
   const openInbox = () =>{
-    //inbox here
-    //change state
-
+    setAddress(title);
   }
 
 
