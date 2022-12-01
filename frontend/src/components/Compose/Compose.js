@@ -4,27 +4,28 @@ class Compose extends Component {
     constructor(props){
         super(props);
         this.state = {
-            to: 'Recipient',
-            subj: 'Subject',
-            essay: 'Penny for your thoughts?',
+            to: '',
+            subj: '',
+            essay: '',
         }
         this.handleChange = this.handleChange.bind(this); 
-        this.handleSubmit = this.handleSubmit.bind(this);
+        // this.handleSend = this.handleSend.bind(this);
     }
     
-    handleChange(event){
+    handleChange(event){ 
         const target = event.target; 
-        const value =  target.value; 
-        const name = target.name;
+        const value = target.value;
+        
         
 
         this.setState({
-            [name]: value
-        });
+            [event.target.name]: value
+        }); 
     }
-    handleSubmit(event)
+    handleSend(event)
     {
-        alert("HI" + this.state.value);
+        event.preventDefault();
+        alert("HI" + this.state.to + this.state.subj + this.state.essay);
     }
     render(){
        return( 
@@ -33,64 +34,38 @@ class Compose extends Component {
             <label>
                 To: 
                     <input 
+                        pattern = ".+@" required
                         value={this.state.to}
+                        placeholder="Recipient"
                         name="to" 
+                        type = "text"
                         goesTo={this.state.to} 
                         onChange={this.handleChange} />
             </label>
             <label>
                 Subject: 
                     <input
-                        value={this.state.subj}
+                        // value={this.state.subj}
+                        placeholder="Subject"
                         name="subj"
                         bodySubj={this.state.subj} 
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                        value={this.state.subj} />
             </label>
 
             <label>
                 Essay: 
                     <textarea 
-                        value={this.state.essay}
+                         value={this.state.essay}
+                        placeholder="Body"
                         name="essay" 
                         essayBody={this.state.essay} 
                         onChange={this.handleChange} />
             </label>
-            <button type={"submit"}>Send</button>
             </form>
+            <button className="button" onClick={(event) => this.handleSend(event)} >Send</button>
             </div>
         );
     }
 }
 export default Compose; 
-// class EssayForm extends React.Component {
-//     constructor(props) {
-//       super(props);
-//       this.state = {
-//         value: 'Please write an essay about your favorite DOM element.'
-//       };
-  
-//       this.handleChange = this.handleChange.bind(this);
-//       this.handleSubmit = this.handleSubmit.bind(this);
-//     }
-  
-//     handleChange(event) {
-//       this.setState({value: event.target.value});
-//     }
-  
-//     handleSubmit(event) {
-//       alert('An essay was submitted: ' + this.state.value);
-//       event.preventDefault();
-//     }
-  
-//     render() {
-//       return (
-//         <form onSubmit={this.handleSubmit}>
-//           <label>
-//             Essay:
-//             <textarea value={this.state.value} onChange={this.handleChange} />
-//           </label>
-//           <input type="submit" value="Submit" />
-//         </form>
-//       );
-//     }
-//   }
