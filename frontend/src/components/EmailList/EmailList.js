@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import "./EmailList.css";
-import Section from "../Section/Section";
+import React, { Component } from "react";
+import Compose from "../Compose/Compose";
 import EmailRow from "../EmailRow/EmailRow";
-import Compose from "../Compose/Compose"; 
-import { Component } from "react";
-import { getFromServer, postToServer } from "./../../helper";
+import Section from "../Section/Section";
+import { getFromServer } from "./../../helper";
+import "./EmailList.css";
 
 
 class EmailList extends Component {
@@ -22,22 +21,61 @@ class EmailList extends Component {
     };
   }
 
+  updateInbox() {
+    getFromServer('/all-received-emails', {
+        address: this.props.address
+      },
+      data => this.setState({ emails_inbox: data.emails }));
+  }
+
+  updateSent() {
+    getFromServer('/all-sent-emails', {
+        address: this.props.address
+      },
+      data => this.setState({ emails_outbox: data.emails }));
+  }
+
+  /**
+   * General method that determines which mode we're in, then updates that box
+   * only to prevent unnecessary API calls.
+   */
+  updateBox() {
+    switch (this.state.mode) {
+        case "inbox":
+            this.updateInbox();
+            break;
+        case "outbox":
+            this.updateSent();
+            break;
+        default:
+            console.log(`updateBox() was called when this.state.mode=${this.state.mode}, doing nothing`);
+    }
+  }
+
+  // This method will run when the component is finished mounting
+  // Run this to fetch emails "on startup"
+  componentDidMount() {
+    this.updateBox();
+  }
+
+  // This method will run when the component props/state has been updated This
+  // makes it so that when props.address changes (user switched address,
+  // propagating address from SidebarOption -> Sidebar -> App -> EmailList), the
+  // displayed mailbox will also update visually.
+  componentDidUpdate(prevProps) {
+    if (this.props.address !== prevProps.address) {
+        this.updateBox();
+    }
+  }
+
   clickInbox() {
       this.setState({ mode: "inbox" });
-      const currentAddress = this.props.address;
-      getFromServer('/all-received-emails', {
-          address: currentAddress
-        },
-        data => this.setState({ emails_inbox: data.emails }));
+      this.updateInbox();
   }
 
   clickSent() {
       this.setState({ mode: "outbox" });
-      const currentAddress = this.props.address;
-      getFromServer('/all-sent-emails', {
-          address: currentAddress
-        },
-        data => this.setState({ emails_outbox: data.emails }));
+      this.updateSent();
   }
 
   clickCompose()
@@ -82,7 +120,7 @@ class EmailList extends Component {
 
     return (
       <div className="emailList">
-        
+
         <div className="emailList-sections">
           <button className="button" onClick={() => this.clickInbox()}>
             <Section Cover="/images/Inbox_Open.png" Reveal="/images/Inbox_Closed.png" title="Inbox" color="green" />
