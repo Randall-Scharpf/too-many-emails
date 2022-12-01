@@ -8,7 +8,7 @@
     "start": "npm install && nodemon dist/index.js",
     "test": "node test/sample-req.js",
     "reset": "rm -r dist/* && rm .data/* && npx tsc",
-    "drop": "rm .data/*"
+    "clear": "node test/clear.js"
   },
   "keywords": [],
   "author": "",
