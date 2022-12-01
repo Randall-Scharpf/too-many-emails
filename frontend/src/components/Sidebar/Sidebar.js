@@ -22,9 +22,15 @@ class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      addresses: [],
+      addresses: props.startingAddresses || [],
       message: ""
     };
+  }
+
+  // This method is called immediately after a component is mounted
+  // Moving the GET request out of the constructor fixes the warning
+  // 'Can't call setState on a component that is not yet mounted.'
+  componentDidMount() {
     getFromServer('/all-addresses', {
       email: this.props.user
     },
@@ -96,12 +102,12 @@ class Sidebar extends Component {
         <form onSubmit={(event) => this.handleSubmit(event)}>
 
           <input
-            pattern= ".+@2me\.com" required
+            pattern=".+@2me\.com" required
             type="text"
             placeholder="@2me.com"
             id="message"
             name="message"
-            onChange={(e) => this.setState({ message: e.target.value}) }
+            onChange={(e) => this.setState({ message: e.target.value })}
             value={this.state.message}
           />
         </form>
