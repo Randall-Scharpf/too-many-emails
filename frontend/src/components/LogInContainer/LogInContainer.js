@@ -1,38 +1,43 @@
-import React from "react";
-import {useState} from 'react' 
-import {useRef} from 'react' 
-import "./LogInContainer.css";
+import React, { Component } from "react";
 import Login2 from "../Login2/Login";
 import Signup from "../Signup/Signup";
+import "./LogInContainer.css";
 
-const LogInContainer = ({ setUser }) => {
 
-//define state to check if login or signup is clicked, visible, or active
-const [login, setLogin] = useState(true);
+class LogInContainer extends Component {
+  /**
+   * props: {
+   *    setUser: (user: string) => void
+   * }
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      login: true,
+      loginContainerRef: React.createRef()
+    }
+  }
 
-//creating reference for container 
-const loginContainerRef = useRef(null);
+  handleClick() {
+    this.setState({ login: !this.state.login });
+    // Not sure what this is for but apparently it does the animation thing
+    this.state.loginContainerRef.current.classList.toggle("active");
+  }
 
-const handleClick = () => {
-    setLogin(!login);
-
-//DOM Manipulation
-loginContainerRef.current.classList.toggle("active");
-}
-
-return (
-    <div className="login-signup-container" ref={loginContainerRef}>
-        <Login2 setUser={setUser} /> 
-        <div className = "side-div">
-            <button type="button" onClick={handleClick}>
-            {" "} 
-            {login ? "Signup" : "Login"}
-            </button>
+  render() {
+    return (
+      <div className="login-signup-container" ref={this.state.loginContainerRef}>
+        <Login2 setUser={(user) => this.setUser(user)} />
+        <div className="side-div">
+          <button type="button" onClick={() => this.handleClick()}>
+            {" "}
+            {this.state.login ? "Signup" : "Login"}
+          </button>
         </div>
-         <Signup /> 
-    </div>
-)
-
+        <Signup />
+      </div>
+    );
+  }
 }
 
-export default LogInContainer
+export default LogInContainer;
