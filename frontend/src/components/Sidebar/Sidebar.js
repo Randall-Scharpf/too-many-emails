@@ -15,14 +15,13 @@ class Sidebar extends Component {
   /**
    * props: {
    *    user: string | null,
-   *    setAddress: (address: string | null) => void,
-   *    startingAddresses: string[]
+   *    setAddress: (address: string | null) => void
    * }
    */
   constructor(props) {
     super(props);
     this.state = {
-      addresses: props.startingAddresses || [],
+      addresses: [],
       message: ""
     };
   }
