@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import "./EmailList.css";
+import React, { Component } from "react";
+import EmailsBox from "../EmailsBox/EmailsBox";
 import Section from "../Section/Section";
-import EmailRow from "../EmailRow/EmailRow";
-import { Component } from "react";
-import { getFromServer, postToServer } from "./../../helper";
+import { getFromServer } from "./../../helper";
+import "./EmailList.css";
 
 
 class EmailList extends Component {
@@ -33,42 +32,19 @@ class EmailList extends Component {
       data => this.setState({ emails_outbox: data.emails }));
   }
 
-  clickCompose()
-  {
+  clickCompose() {
     this.setState({ mode: "compose" });
-    
+
   }
 
   //
   render() {
     let boxComponent;
     if (this.state.mode === "inbox") {
-      boxComponent = (<div className="emailList-list">
-        {this.state.emails_inbox.map((email) => (
-          <EmailRow
-            title={email.from}
-            subject={email.subject}
-          />
-        ))}
-        <EmailRow
-          title="Twitch"
-          subject="Hey fellow streamer!!"
-        />
-      </div>);
+      boxComponent = <EmailsBox emails_list={this.state.emails_inbox} />;
     }
     else if (this.state.mode === "outbox") {
-      boxComponent = (<div className="emailList-list">
-        {this.state.emails_outbox.map((email) => (
-          <EmailRow
-            title={email.to}
-            subject={email.subject}
-          />
-        ))}
-        <EmailRow
-          title="Twitch"
-          subject="Hey fellow streamer!! (but this is in outbox now)"
-        />
-      </div>);
+      boxComponent = <EmailsBox emails_list={this.state.emails_outbox} />;
     }
     else {
       boxComponent = (<div>Work in progress!</div>);
@@ -76,7 +52,7 @@ class EmailList extends Component {
 
     return (
       <div className="emailList">
-        
+
         <div className="emailList-sections">
           <button className="button" onClick={() => this.clickInbox()}>
             <Section Cover="/images/Inbox_Open.png" Reveal="/images/Inbox_Closed.png" title="Inbox" color="green" />
