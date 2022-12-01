@@ -5,7 +5,7 @@ import "./LogInContainer.css";
 import Login2 from "../Login2/Login";
 import Signup from "../Signup/Signup";
 
-const LogInContainer = () => {
+const LogInContainer = ({ setUser }) => {
 
 //define state to check if login or signup is clicked, visible, or active
 const [login, setLogin] = useState(true);
@@ -22,7 +22,7 @@ loginContainerRef.current.classList.toggle("active");
 
 return (
     <div className="login-signup-container" ref={loginContainerRef}>
-        <Login2 /> 
+        <Login2 setUser={setUser} /> 
         <div className = "side-div">
             <button type="button" onClick={handleClick}>
             {" "} 
