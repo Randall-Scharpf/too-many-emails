@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
+import { postToServer } from '../../helper';
 import "./Login.css";
 
 
 
 class Login extends Component {
-  constructor() {
+  constructor({ setUser }) {
     super();
+    this.props = { setUser };
     this.state = {
       user: "",
       password: "",
@@ -15,8 +17,17 @@ class Login extends Component {
   checkInput(event) {
     event.preventDefault();
 
-    alert(this.state.user);
-    alert(this.state.password);
+    postToServer('/login-user', {
+      email: this.state.user,
+      pw: this.state.password
+    },
+      data => {
+        if (data.code === 200) {
+          this.props.setUser(this.state.user);
+        } else {
+          alert(JSON.stringify(data));
+        }
+      })
 
   }
   render() {
