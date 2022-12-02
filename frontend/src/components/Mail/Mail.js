@@ -31,11 +31,11 @@ class Mail extends Component {
           </div>
         </div>
         <div className="mail-body">
+          <p>{this.props.selectedMail?.timestamp}</p>
           <div className="mail-bodyHeader">
             <div className="mail-subject">
               <h2>{this.props.selectedMail?.subject}</h2>
             </div>
-            <p className="mail-time">{this.props.selectedMail?.time}</p>
           </div>
           <div className="mail-participants">
             <p><strong>FROM: </strong>{this.props.selectedMail?.from}</p>

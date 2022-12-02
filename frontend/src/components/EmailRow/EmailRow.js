@@ -37,8 +37,9 @@ class EmailRow extends Component {
         <h3 className="emailRow-title">{this.props.email?.from}</h3>
         <div className="emailRow-message">
           <h4>
-            {this.props.email?.subject}{" "}
+            {this.props.email?.subject}
           </h4>
+          <p>{this.props.email?.timestamp}</p>
         </div>
       </div>
     );
