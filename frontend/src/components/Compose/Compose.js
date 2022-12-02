@@ -2,6 +2,7 @@ import {Component} from "react";
 import { postToServer } from "../../helper";
 import "./Compose.css"
 
+
 class Compose extends Component {
     constructor(props){
         super(props);
