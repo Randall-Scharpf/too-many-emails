@@ -2,15 +2,11 @@ import React from "react";
 import "./navbar.css";
 
 const navbar = () => {
-    return <nav>
-        <a href="/">Meow</a>
-        <div>
-            <p>
-                Welcome, <span>Guest</span>
-            </p>
-            <i className = "fa fa-user"></i>
-        </div>
-        </nav>;
+  return (
+    <nav>
+      <a href="/">Too Many Emails</a>
+    </nav>
+  );
 };
 
-export default navbar
+export default navbar;

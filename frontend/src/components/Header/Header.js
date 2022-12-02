@@ -1,13 +1,9 @@
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import SearchIcon from "@material-ui/icons/Search";
 import React from "react";
 import { postToServer } from '../../helper';
 import "./Header.css";
 
 
 function Header({ user, setUser, token }) {
-
-
   const signOut = () => {
     setUser(null);
     postToServer('/logout-user', {
@@ -30,15 +26,9 @@ function Header({ user, setUser, token }) {
           <img src="/images/2ME.png" />
           <img src="/images/2ME_Wiggly.png" />
         </a>
-        {/* <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzRceIIBz4GgeNszaN5SupI6p1SJE_Bzgk3Q&usqp=CAU"
-          alt="gmail logo"
-        /> */}
       </div>
       <div className="header-middle">
-        <SearchIcon />
-        <input type="text" placeholder="Search mail" />
-        <ArrowDropDownIcon className="header-inputCaret" />
+        {/* Removed search bar */}
       </div>
       <div className="header-right">
         <h3>{user}'s Too Many Emails</h3>
