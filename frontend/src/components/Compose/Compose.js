@@ -1,4 +1,5 @@
 import {Component} from "react";
+import { postToServer } from "../../helper";
 
 class Compose extends Component {
     constructor(props){
@@ -26,26 +27,40 @@ class Compose extends Component {
     {
         event.preventDefault();
         alert("HI" + this.state.to + this.state.subj + this.state.essay);
+
+        postToServer("/email",{
+            "from": this.props.user,
+            "to": this.state.to,
+            "subject": this.state.subj,
+            "text": this.state.essay,
+
+        });
+       
+        this.setState({
+            to:'',
+            subj:'',
+            essay:''
+        });
     }
     render(){
        return( 
-           <div>
-        <form>
-            <label>
+           <div className="compose_area">
+        <form className="compose_form">
+            <label className="email-form">
                 To: 
                     <input 
+                        required="required"
                         pattern = ".+@" required
-                        value={this.state.to}
                         placeholder="Recipient"
                         name="to" 
-                        type = "text"
                         goesTo={this.state.to} 
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange} 
+                        value={this.state.to}/>
             </label>
             <label>
                 Subject: 
                     <input
-                        // value={this.state.subj}
+                        required="required"
                         placeholder="Subject"
                         name="subj"
                         bodySubj={this.state.subj} 
@@ -56,11 +71,11 @@ class Compose extends Component {
             <label>
                 Essay: 
                     <textarea 
-                         value={this.state.essay}
                         placeholder="Body"
                         name="essay" 
                         essayBody={this.state.essay} 
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange} 
+                        value={this.state.essay}/>
             </label>
             </form>
             <button className="button" onClick={(event) => this.handleSend(event)} >Send</button>
