@@ -1,13 +1,9 @@
-import { Button } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import React from "react";
+import React, { Component } from "react";
+import { getFromServer, postToServer } from "./../../helper";
 import "./Sidebar.css";
-
 import SidebarOption from "./SidebarOption";
 
-import { Component } from 'react';
-import { openSendMessage } from "../../features/mailSlice";
-import { getFromServer, postToServer } from "./../../helper";
+
 
 
 
@@ -90,13 +86,6 @@ class Sidebar extends Component {
   render() {
     return (
       <div className="sidebar">
-        {/* <Button
-          className="sidebar-compose"
-          onClick={() => openSendMessage()}
-          startIcon={<AddIcon fontSize="large" />}
-        >
-          Compose
-        </Button> */}
         <div>
           <h4><center>input new email:</center></h4>
         </div>

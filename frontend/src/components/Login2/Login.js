@@ -24,6 +24,9 @@ class Login extends Component {
   loginUser() {
     this.props.setUser(this.state.user);
     this.props.history.push("/"); // don't show up at /mail lol
+    this.setState({
+      password: ''
+    });
   }
 
   checkInput(event) {

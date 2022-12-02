@@ -46,7 +46,10 @@ class App extends Component {
           </div>
         ) : (
           <div className="app">
-            <Header />
+            <Header
+              user={this.state.user}
+              setUser={(user) => this.setUser(user)}
+            />
             <div className="app-body">
               <Sidebar
                 user={this.state.user}
