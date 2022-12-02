@@ -8,7 +8,8 @@ import "./LogInContainer.css";
 class LogInContainer extends Component {
   /**
    * props: {
-   *    setUser: (user: string) => void
+   *    setUser: (user: string) => void,
+   *    setToken: (token: string) => void
    * }
    */
   constructor(props) {

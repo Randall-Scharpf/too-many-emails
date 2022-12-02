@@ -30,6 +30,11 @@ class App extends Component {
 
   setUser(user) {
     this.setState({ user });
+    // A little workaround to reset address when a user is logged out.
+    // That way we don't need to pass around extra callbacks everywhere holy.
+    if (user === null) {
+      this.setAddress(null);
+    }
   }
 
   setMode(mode) {
