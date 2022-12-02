@@ -9,13 +9,14 @@ import "./EmailList.css";
 class EmailList extends Component {
     /**
      * props: {
-     *    address: string | null
+     *    address: string | null,
+     *    mode: "inbox" | "outbox" | "compose",
+     *    setMode: (mode: "inbox" | "outbox" | "compose") => void
      * }
      */
     constructor(props) {
         super(props);
         this.state = {
-            mode: "inbox",
             emails_inbox: [],
             emails_outbox: []
         };
@@ -40,7 +41,7 @@ class EmailList extends Component {
      * only to prevent unnecessary API calls.
      */
     updateBox() {
-        switch (this.state.mode) {
+        switch (this.props.mode) {
             case "inbox":
                 this.updateInbox();
                 break;
@@ -48,7 +49,7 @@ class EmailList extends Component {
                 this.updateSent();
                 break;
             default:
-                console.log(`updateBox() was called when this.state.mode=${this.state.mode}, doing nothing`);
+                console.log(`updateBox() was called when this.props.mode=${this.props.mode}, doing nothing`);
         }
     }
 
@@ -69,26 +70,27 @@ class EmailList extends Component {
     }
 
     clickInbox() {
-        this.setState({ mode: "inbox" });
+        this.props.setMode("inbox");
         this.updateInbox();
     }
 
     clickSent() {
-        this.setState({ mode: "outbox" });
+        this.props.setMode("outbox");
         this.updateSent();
     }
 
     clickCompose() {
-        this.setState({ mode: "compose" });
+      this.props.setMode("compose");
     }
 
     //
     render() {
+        // console.log(`Re-rendering EmailList with address=${this.props.address}, mode=${this.props.mode}`);
         let boxComponent;
-        if (this.state.mode === "inbox") {
+        if (this.props.mode === "inbox") {
             boxComponent = <EmailsBox emails_list={this.state.emails_inbox} />;
         }
-        else if (this.state.mode === "outbox") {
+        else if (this.props.mode === "outbox") {
             boxComponent = <EmailsBox emails_list={this.state.emails_outbox} />;
         }
         else {

@@ -5,9 +5,12 @@ import "./EmailRow.css";
 class EmailRow extends Component {
   /**
    * props: {
-   *      title: string,
-   *      subject: string
-   *      time: string <-- TODO
+   *    email: {
+   *        from: string,
+   *        to: string[],
+   *        subject: string | null,
+   *        text: string | null
+   *    }
    * }
    */
   constructor(props) {
@@ -24,7 +27,7 @@ class EmailRow extends Component {
         <div className="emailRow-options">
 
         </div>
-        <h3 className="emailRow-title">{this.props.title}</h3>
+        <h3 className="emailRow-title">{this.props.from}</h3>
         <div className="emailRow-message">
           <h4>
             {this.props.subject}{" "}

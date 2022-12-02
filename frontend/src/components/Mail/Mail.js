@@ -13,7 +13,7 @@ class Mail extends Component {
    *        to: string[],
    *        subject: string | null,
    *        text: string | null
-   *    }
+   *    } | null
    * }
    */
   constructor(props) {

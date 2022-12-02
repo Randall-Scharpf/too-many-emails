@@ -14,7 +14,8 @@ class App extends Component {
     super(props);
     this.state = {
       user: null,
-      address: null
+      address: null,
+      mode: "inbox"
     };
   }
 
@@ -24,6 +25,10 @@ class App extends Component {
 
   setUser(user) {
     this.setState({ user });
+  }
+
+  setMode(mode) {
+    this.setState({ mode });
   }
 
   render() {
@@ -45,7 +50,11 @@ class App extends Component {
               />
               <Switch>
                 <Route path={"/"} exact>
-                  <EmailList address={this.state.address} />
+                  <EmailList
+                    address={this.state.address}
+                    mode={this.state.mode}
+                    setMode={(mode) => this.setMode(mode)}
+                  />
                 </Route>
                 <Route path={"/mail"}>
                   <Mail />

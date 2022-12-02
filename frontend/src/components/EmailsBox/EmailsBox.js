@@ -23,13 +23,13 @@ class EmailsBox extends Component {
     return (<div className="emailList-list">
       {this.props.emails_list.map((email, index) => (
         <EmailRow
-          title={email.from}
+          from={email.from}
           subject={email.subject}
           key={index}
         />
       ))}
       <EmailRow
-        title="Twitch"
+        from="Twitch"
         subject="Hey fellow streamer!!"
         key={-1}
       />
