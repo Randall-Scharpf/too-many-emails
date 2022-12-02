@@ -363,7 +363,7 @@ Example response JSON:
 
 Add an email object to the database.
 
-The input email object must conform to the schema defined in [schema/email.json](schema/email.jsonc).
+The input email object must conform to the schema defined in [schema/email.json](schema/email.jsonc), minus the timestamp. You don't need to supply a timestamp because the server will automatically generate the current timestamp at the time of its call.
 
 Example request body:
 
@@ -373,7 +373,6 @@ Example request body:
   "to": ["eggert@cs.ucla.edu", "throwaway4@lmao.com"],
   "subject": "My Test Email",
   "text": "Hello all,\n\nThis is some dummy test. That is all.\n",
-  "timestamp": "2022-12-01 05:45:27"
 }
 ```
 
@@ -382,6 +381,6 @@ Example response JSON:
 ```json
 {
   "code": 200,
-  "message": "Stored email from throwaway2@lmao.com to eggert@cs.ucla.edu,throwaway4@lmao.com"
+  "message": "Stored email from throwaway2@lmao.com to eggert@cs.ucla.edu,throwaway4@lmao.com, sent at 2022-11-28 08:25:17"
 }
 ```

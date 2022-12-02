@@ -2,9 +2,16 @@
 // Implements API for transmitted email objects.
 
 import { Application } from "express";
+import moment = require("moment");
 
 import db from "./db";
 import { Email } from "./types";
+
+/**
+ * Date format string for moment.format(). Documentation:
+ * https://momentjs.com/docs/#/displaying/format/
+ */
+const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
 
 /** Schema of a row from the Email table of our database.  */
 interface EmailRow {
@@ -43,11 +50,6 @@ function findEmailError(body: any): string | null {
     // Validate email body text
     if (body.text !== null && typeof body.text !== "string")
         return `'body' must be either null or a string`;
-
-    // Validate timestamp with a simple regex
-    const TS_REGEX = /[0-9]{4}-[0-1][0-9]-[0-3][0-9] [0-2][0-9](:[0-5][0-9]]){2}/;
-    if (typeof body.timestamp !== "string" || body.timestamp.match(TS_REGEX))
-        return `'timestamp' must match the YYYY-MM-DD HH:MM:SS format`;
 
     return null;
 }
@@ -185,14 +187,18 @@ function getReceivedEmails(
 
 
 /**
- * Given an email object, add it to the Email table and update the Transmission
- * table respectively based on its sender, receivers, CCs, BCCs, etc.
+ * Given an email object, add it to the Email table. The email object does not
+ * need to have the timestamp attribute because the function will overwrite it
+ * with the current timestamp before inserting into database.
  */
 function storeEmail(
     email: Email,
     callback: (resp) => void
 ): void {
 
+    // Generate the timestamp at the time of call.
+    // That way, it's not the front-end's responsibility to pass in a timestamp.
+    email.timestamp = moment().format(DATE_FORMAT);;
     db.run(
         "INSERT INTO Email (Subject, Body, SenderAddress, ReceiverAddresses, Timestamp) VALUES (?, ?, ?, ?, ?)",
         [email.subject || null, email.text || null, email.from, email.to.join(","), email.timestamp],
