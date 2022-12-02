@@ -5,14 +5,14 @@ import { postToServer } from '../../helper';
 import "./Header.css";
 
 
-function Header({ user, setUser }) {
+function Header({ user, setUser, token }) {
 
 
   const signOut = () => {
     setUser(null);
     postToServer('/logout-user', {
       email: user,
-      token: ''
+      token: token,
     },
       data => {
         if (data.code === 400) {
