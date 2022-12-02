@@ -12,7 +12,13 @@ class EmailsBox extends Component {
    *        to: string[],
    *        subject: string | null,
    *        text: string | null
-   *    }[]
+   *    }[],
+   *    setSelectedMail: (email: {
+   *        from: string,
+   *        to: string[],
+   *        subject: string | null,
+   *        text: string | null
+   *    }) => void
    * }
    */
   constructor(props) {
@@ -23,14 +29,17 @@ class EmailsBox extends Component {
     return (<div className="emailList-list">
       {this.props.emails_list.map((email, index) => (
         <EmailRow
-          from={email.from}
-          subject={email.subject}
+          email={email}
+          setSelectedMail={(email) => this.props.setSelectedMail(email)}
           key={index}
         />
       ))}
       <EmailRow
-        from="Twitch"
-        subject="Hey fellow streamer!!"
+        email={{
+          from: "Twitch",
+          suject: "Hey fellow streamer!!"
+        }}
+        setSelectedMail={(email) => this.props.setSelectedMail(email)}
         key={-1}
       />
     </div>);

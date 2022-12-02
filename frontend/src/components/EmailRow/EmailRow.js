@@ -10,7 +10,13 @@ class EmailRow extends Component {
    *        to: string[],
    *        subject: string | null,
    *        text: string | null
-   *    }
+   *    },
+   *    setSelectedMail: (email: {
+   *        from: string,
+   *        to: string[],
+   *        subject: string | null,
+   *        text: string | null
+   *    }) => void
    * }
    */
   constructor(props) {
@@ -19,6 +25,7 @@ class EmailRow extends Component {
 
   openMail() {
     this.props.history.push("/mail");
+    this.props.setSelectedMail(this.props.email);
   }
 
   render() {
@@ -27,10 +34,10 @@ class EmailRow extends Component {
         <div className="emailRow-options">
 
         </div>
-        <h3 className="emailRow-title">{this.props.from}</h3>
+        <h3 className="emailRow-title">{this.props.email?.from}</h3>
         <div className="emailRow-message">
           <h4>
-            {this.props.subject}{" "}
+            {this.props.email?.subject}{" "}
           </h4>
         </div>
       </div>

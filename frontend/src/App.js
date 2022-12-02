@@ -15,7 +15,8 @@ class App extends Component {
     this.state = {
       user: null,
       address: null,
-      mode: "inbox"
+      mode: "inbox",
+      selectedMail: null
     };
   }
 
@@ -31,7 +32,13 @@ class App extends Component {
     this.setState({ mode });
   }
 
+  setSelectedMail(email) {
+    console.log(`setSelectedMail() called with ${JSON.stringify(email)}`);
+    this.setState({ selectedMail: email });
+  }
+
   render() {
+    console.log(`selectedMail=${JSON.stringify(this.state.selectedMail)}`);
     return (
       <div className="root">
         {!this.state.user ? (
@@ -54,10 +61,11 @@ class App extends Component {
                     address={this.state.address}
                     mode={this.state.mode}
                     setMode={(mode) => this.setMode(mode)}
+                    setSelectedMail={(email) => this.setSelectedMail(email)}
                   />
                 </Route>
                 <Route path={"/mail"}>
-                  <Mail />
+                  <Mail selectedMail={this.state.selectedMail} />
                 </Route>
               </Switch>
             </div>

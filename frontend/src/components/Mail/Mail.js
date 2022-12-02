@@ -35,12 +35,14 @@ class Mail extends Component {
             <div className="mail-subject">
               <h2>{this.props.selectedMail?.subject}</h2>
             </div>
-            <p>{this.props.selectedMail?.title}</p>
             <p className="mail-time">{this.props.selectedMail?.time}</p>
           </div>
-
+          <div className="mail-participants">
+            <p><strong>FROM: </strong>{this.props.selectedMail?.from}</p>
+            <p><strong>TO: </strong>{this.props.selectedMail?.to.join("; ")}</p>
+          </div>
           <div className="mail-message">
-            <p>{this.props.selectedMail?.description}</p>
+            <p>{this.props.selectedMail?.text}</p>
           </div>
         </div>
       </div>
