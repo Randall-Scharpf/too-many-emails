@@ -33,12 +33,10 @@ class App extends Component {
   }
 
   setSelectedMail(email) {
-    console.log(`setSelectedMail() called with ${JSON.stringify(email)}`);
     this.setState({ selectedMail: email });
   }
 
   render() {
-    console.log(`selectedMail=${JSON.stringify(this.state.selectedMail)}`);
     return (
       <div className="root">
         {!this.state.user ? (
