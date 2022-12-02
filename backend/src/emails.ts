@@ -19,26 +19,37 @@ interface EmailRow {
 
 /**
  * Brute force type and and value validator to check if a request's body matches
- * the Email interface.
+ * the Email interface. Return a message describing what was the first
+ * violation detected, or null if param body is valid.
  */
-function validateEmail(body: any): boolean {
+function findEmailError(body: any): string | null {
     if (typeof body !== "object")
-        return false;
+        return `body must be a JSON object`;
+
     // Validate sender
     if (typeof body.from !== "string")
-        return false;
+        return `'from' must be a string`;
+
     // Validate recipients
     if (!Array.isArray(body.to))
-        return false;
+        return `'to' must be an array of strings`;
     if (!body.to.every(item => typeof item === "string"))
-        return false;
+        return `'to' must be an array of strings`;
+
     // Validate subject line
     if (body.subject !== null && typeof body.subject !== "string")
-        return false;
+        return `'subject' must be either null or a string`;
+
     // Validate email body text
     if (body.text !== null && typeof body.text !== "string")
-        return false;
-    return true;
+        return `'body' must be either null or a string`;
+
+    // Validate timestamp with a simple regex
+    const TS_REGEX = /[0-9]{4}-[0-1][0-9]-[0-3][0-9] [0-2][0-9](:[0-5][0-9]]){2}/;
+    if (typeof body.timestamp !== "string" || body.timestamp.match(TS_REGEX))
+        return `'timestamp' must match the YYYY-MM-DD HH:MM:SS format`;
+
+    return null;
 }
 
 
@@ -71,12 +82,18 @@ export function initEmailEndpoints(server: Application): void {
         });
     });
     server.post("/email", (req, res) => {
-        if (!validateEmail(req.body)) {
-            return res.status(400).json({ code: 400, message: "Body does not conform with shape of Email interface" });
+        const errorMsg = findEmailError(req.body);
+        if (errorMsg === null) {
+            storeEmail(req.body as Email, (resp): void => {
+                res.status(resp.code).json(resp);
+            });
         }
-        storeEmail(req.body as Email, (resp): void => {
-            res.status(resp.code).json(resp);
-        });
+        else {
+            return res.status(400).json({
+                code: 400,
+                message: `Body does not conform with shape of Email interface: ${errorMsg}`
+            });
+        }
     });
 }
 
