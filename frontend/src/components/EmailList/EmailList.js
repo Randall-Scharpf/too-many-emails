@@ -1,76 +1,142 @@
-import { Checkbox, IconButton } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import "./EmailList.css";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import RedoIcon from "@material-ui/icons/Redo";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import KeyboardHideIcon from "@material-ui/icons/KeyboardHide";
-import SettingsIcon from "@material-ui/icons/Settings";
-import InboxIcon from "@material-ui/icons/Inbox";
-import SendIcon from "@material-ui/icons/Send";
-import LocalOfferIcon from "@material-ui/icons/LocalOffer";
+import { Component } from "react";
+import Compose from "../Compose/Compose";
+import EmailsBox from "../EmailsBox/EmailsBox";
 import Section from "../Section/Section";
-import EmailRow from "../EmailRow/EmailRow";
+import { getFromServer } from "./../../helper";
+import "./EmailList.css";
 
-function EmailList({ emails }) {
-  return (
-    <div className="emailList">
-      {/* <div className="emailList-settings">
-        <div className="emailList-settingsLeft">
-          <Checkbox />
-          <IconButton>
-            <ArrowDropDownIcon />
-          </IconButton>
-          <IconButton>
-            <RedoIcon />
-          </IconButton>
-          <IconButton>
-            <MoreVertIcon />
-          </IconButton>
-        </div>
-        <div className="emailList-settingsRight">
-          <IconButton>
-            <ChevronLeftIcon />
-          </IconButton>
-          <IconButton>
-            <ChevronRightIcon />
-          </IconButton>
-          <IconButton>
-            <KeyboardHideIcon />
-          </IconButton>
-          <IconButton>
-            <SettingsIcon />
-          </IconButton>
-        </div>
-      </div> */}
-      <div className="emailList-sections">
-        <Section Icon={InboxIcon} title="Inbox" color="red" selected />
-        <Section Icon={SendIcon} title="Sent" color="#1A73E8" />
-        {/* <Section Icon={LocalOfferIcon} title="Promotions" color="green" /> */}
-      </div>
 
-      <div className="emailList-list">
-        {emails.map(({ id, data: { to, subject, message, timestamp } }) => (
-          <EmailRow
-            id={id}
-            key={id}
-            title={to}
-            subject={subject}
-            description={message}
-            time={new Date(timestamp?.seconds * 1000).toUTCString()}
-          />
-        ))}
-        <EmailRow
-          title="Twitch"
-          subject="Hey fellow streamer!!"
-          description="This is a DOPE"
-          time="10pm"
-        />
+class EmailList extends Component {
+  /**
+   * props: {
+   *    address: string | null,
+   *    mode: "inbox" | "outbox" | "compose",
+   *    setMode: (mode: "inbox" | "outbox" | "compose") => void
+   *    setSelectedMail: (email: {
+   *        from: string,
+   *        to: string[],
+   *        subject: string | null,
+   *        text: string | null
+   *    }) => void
+   * }
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      emails_inbox: [],
+      emails_outbox: []
+    };
+  }
+
+  updateInbox() {
+    getFromServer('/all-received-emails', {
+      address: this.props.address
+    },
+      data => this.setState({ emails_inbox: data.emails }));
+  }
+
+  updateSent() {
+    getFromServer('/all-sent-emails', {
+      address: this.props.address
+    },
+      data => this.setState({ emails_outbox: data.emails }));
+  }
+
+  /**
+   * General method that determines which mode we're in, then updates that box
+   * only to prevent unnecessary API calls.
+   */
+  updateBox() {
+    switch (this.props.mode) {
+      case "inbox":
+        this.updateInbox();
+        break;
+      case "outbox":
+        this.updateSent();
+        break;
+      default:
+        console.log(`updateBox() was called when this.props.mode=${this.props.mode}, doing nothing`);
+    }
+  }
+
+  // This method will run when the component is finished mounting
+  // Run this to fetch emails "on startup"
+  componentDidMount() {
+    this.updateBox();
+  }
+
+  // This method will run when the component props/state has been updated This
+  // makes it so that when props.address changes (user switched address,
+  // propagating address from SidebarOption -> Sidebar -> App -> EmailList), the
+  // displayed mailbox will also update visually.
+  componentDidUpdate(prevProps) {
+    if (this.props.address !== prevProps.address) {
+      this.updateBox();
+    }
+  }
+
+  clickInbox() {
+    this.props.setMode("inbox");
+    this.updateInbox();
+  }
+
+  clickSent() {
+    this.props.setMode("outbox");
+    this.updateSent();
+  }
+
+  clickCompose() {
+    if (this.props.address) {
+      this.props.setMode("compose");
+    } else {
+      alert("select or create new address!");
+    }
+  }
+
+  //
+  render() {
+    // console.log(`Re-rendering EmailList with address=${this.props.address}, mode=${this.props.mode}`);
+    let boxComponent;
+    if (this.props.mode === "inbox") {
+      boxComponent = (<EmailsBox
+        emails_list={this.state.emails_inbox}
+        setSelectedMail={(email) => this.props.setSelectedMail(email)}
+      />);
+    }
+    else if (this.props.mode === "outbox") {
+      boxComponent = (<EmailsBox
+        emails_list={this.state.emails_outbox}
+        setSelectedMail={(email) => this.props.setSelectedMail(email)}
+      />);
+    }
+    else {
+      boxComponent = <Compose address={this.props.address} />;
+    }
+
+    return (
+      <div className="emailList">
+
+        <div className="emailList-sections">
+          <button className="button" onClick={() => this.clickInbox()}>
+            <Section Cover="/images/Inbox_Open.png" Reveal="/images/Inbox_Closed.png" title="Inbox" color="green" />
+            <p>Inbox</p>
+          </button>
+          <button className="button" onClick={() => this.clickSent()}>
+            <Section Cover="/images/Outbox_Open.png" Reveal="/images/Outbox_Closed.png" title="Sent" color="orange" />
+            <p>Outbox</p>
+          </button>
+          <button className="button" onClick={() => this.clickCompose()}>
+            <Section Cover="/images/Outbox_Closed.png" Reveal="/images/Inbox_Open.png" title="Compose" color="pink" />
+            <p>Compose</p>
+          </button>
+          {/* <Section Icon={LocalOfferIcon} title="Promotions" color="green" /> */}
+        </div>
+
+
+        {boxComponent}
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default EmailList;

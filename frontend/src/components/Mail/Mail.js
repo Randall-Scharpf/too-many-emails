@@ -1,97 +1,53 @@
-import React from "react";
-import "./Mail.css";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import MoveToInboxIcon from "@material-ui/icons/MoveToInbox";
-import ErrorIcon from "@material-ui/icons/Error";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EmailIcon from "@material-ui/icons/Email";
-import WatchLaterIcon from "@material-ui/icons/WatchLater";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import LabelImportantIcon from "@material-ui/icons/LabelImportant";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import UnfoldMoreIcon from "@material-ui/icons/UnfoldMore";
-import PrintIcon from "@material-ui/icons/Print";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { IconButton } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
-import { selectOpenMail } from "../../features/mailSlice";
-import { useSelector } from "react-redux";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import "./Mail.css";
 
-function Mail() {
-  const history = useHistory();
 
-  const selectedMail = useSelector(selectOpenMail);
+class Mail extends Component {
+  /**
+   * props: {
+   *    selectedMail: {
+   *        from: string,
+   *        to: string[],
+   *        subject: string | null,
+   *        text: string | null
+   *    } | null
+   * }
+   */
+  constructor(props) {
+    super(props);
+  }
 
-  return (
-    <div className="mail">
-      <div className="mail-tools">
-        <div className="mail-toolsLeft">
-          <IconButton onClick={() => history.push("/")}>
-            <ArrowBackIcon />
-          </IconButton>
-
-          {/* <IconButton>
-            <MoveToInboxIcon />
-          </IconButton>
-
-          <IconButton>
-            <ErrorIcon />
-          </IconButton>
-
-          <IconButton>
-            <DeleteIcon />
-          </IconButton> */}
-
-          <IconButton>
-            <EmailIcon />
-          </IconButton>
-
-          {/* <IconButton>
-            <WatchLaterIcon />
-          </IconButton>
-
-          <IconButton>
-            <CheckCircleIcon />
-          </IconButton>
-
-          <IconButton>
-            <LabelImportantIcon />
-          </IconButton>
-
-          <IconButton>
-            <MoreVertIcon />
-          </IconButton> */}
-        </div>
-        {/* <div className="mail-toolsRight">
-          <IconButton>
-            <UnfoldMoreIcon />
-          </IconButton>
-
-          <IconButton>
-            <PrintIcon />
-          </IconButton>
-
-          <IconButton>
-            <ExitToAppIcon />
-          </IconButton>
-        </div> */}
-      </div>
-      <div className="mail-body">
-        <div className="mail-bodyHeader">
-          <div className="mail-subject">
-            <h2>{selectedMail?.subject}</h2>
-            {/* <LabelImportantIcon className="mail-important" /> */}
+  render() {
+    return (
+      <div className="mail">
+        <div className="mail-tools">
+          <div className="mail-toolsLeft">
+            <IconButton onClick={() => this.props.history.push("/")}>
+              <ArrowBackIcon />
+            </IconButton>
           </div>
-          <p>{selectedMail?.title}</p>
-          <p className="mail-time">{selectedMail?.time}</p>
         </div>
-
-        <div className="mail-message">
-          <p>{selectedMail?.description}</p>
+        <div className="mail-body">
+          <div className="mail-bodyHeader">
+            <div className="mail-subject">
+              <h2>{this.props.selectedMail?.subject}</h2>
+            </div>
+            <p className="mail-time">{this.props.selectedMail?.time}</p>
+          </div>
+          <div className="mail-participants">
+            <p><strong>FROM: </strong>{this.props.selectedMail?.from}</p>
+            <p><strong>TO: </strong>{this.props.selectedMail?.to.join("; ")}</p>
+          </div>
+          <div className="mail-message">
+            <p>{this.props.selectedMail?.text}</p>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
-export default Mail;
+export default withRouter(Mail);

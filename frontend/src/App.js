@@ -1,70 +1,92 @@
-import React, { useEffect, useState } from "react";
+import React, { Component } from "react";
+import { Route, Switch } from "react-router-dom";
 import "./App.css";
-import Header from "./components/Header/Header";
-import Sidebar from "./components/Sidebar/Sidebar";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Mail from "./components/Mail/Mail";
 import EmailList from "./components/EmailList/EmailList";
-import SendMail from "./components/SendMail/SendMail";
-import { useSelector } from "react-redux";
-import { selectSendMessageIsOpen } from "./features/mailSlice";
-import { selectUser } from "./features/userSlice";
-import Login from "./components/Login/Login";
-import Navbar from "./components/Navbar/navbar";
+import Header from "./components/Header/Header";
 import LogInContainer from "./components/LogInContainer/LogInContainer";
-import Login2 from "./components/Login2/Login";
-import Signup from "./components/Signup/Signup";
-import { db } from "./firebase";
-import { NavigateBefore } from "@material-ui/icons";
+import Mail from "./components/Mail/Mail";
+import Navbar from "./components/Navbar/navbar";
+import Sidebar from "./components/Sidebar/Sidebar";
 
-function App() {
-  const sendMessageIsOpen = useSelector(selectSendMessageIsOpen);
-  const user = useSelector(selectUser);
-  const [emails, setEmails] = useState([]);
 
-  console.log("emails", emails);
-  useEffect(() => {
-    db.collection("emails")
-      .orderBy("timestamp", "desc")
-      .onSnapshot((snapshot) =>
-        setEmails(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            data: doc.data(),
-          }))
-        )
-      );
-  }, []);
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+      address: null,
+      mode: "inbox",
+      selectedMail: null,
+      token: ''
+    };
+  }
+  setToken(token) {
+    this.setState({ token })
+  }
 
-  return (
-    <Router>
-      {!user ? (
-        <div>
-          <Navbar />
-          <LogInContainer />
+  setAddress(address) {
+    this.setState({ address });
+  }
 
-        </div>
+  setUser(user) {
+    this.setState({ user });
+    // A little workaround to reset address when a user is logged out.
+    // That way we don't need to pass around extra callbacks everywhere holy.
+    if (user === null) {
+      this.setAddress(null);
+    }
+  }
 
-      ) : (
-        <div className="app">
-          <Header />
-          <div className="app-body">
-            <Sidebar emails={emails} />
-            <Switch>
-              <Route path="/mail">
-                <Mail />
-              </Route>
-              <Route path="/" exact>
-                <EmailList emails={emails} />
-              </Route>
-            </Switch>
+  setMode(mode) {
+    this.setState({ mode });
+  }
+
+  setSelectedMail(email) {
+    this.setState({ selectedMail: email });
+  }
+
+  render() {
+    return (
+      <div className="root">
+        {!this.state.user ? ( /*CHANGEBACK */
+          <div>
+            <Navbar />
+            <LogInContainer setUser={(user) => this.setUser(user)}
+              setToken={(token) => this.setToken(token)}
+            />
           </div>
-
-          {sendMessageIsOpen && <SendMail />}
-        </div>
-      )}
-    </Router>
-  );
+        ) : (
+          <div className="app">
+            <Header
+              user={this.state.user}
+              token={this.state.token}
+              setUser={(user) => this.setUser(user)}
+            />
+            <div className="app-body">
+              <Sidebar
+                user={this.state.user}
+                selectedAddress={this.state.address}
+                setAddress={(address) => this.setAddress(address)}
+              />
+              <Switch>
+                <Route path={"/"} exact>
+                  <EmailList
+                    address={this.state.address}
+                    mode={this.state.mode}
+                    setMode={(mode) => this.setMode(mode)}
+                    setSelectedMail={(email) => this.setSelectedMail(email)}
+                  />
+                </Route>
+                <Route path={"/mail"}>
+                  <Mail selectedMail={this.state.selectedMail} />
+                </Route>
+              </Switch>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 }
 
 export default App;

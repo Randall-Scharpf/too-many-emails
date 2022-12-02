@@ -1,16 +1,45 @@
-import React from 'react'
+import React, { Component } from 'react';
 import "./Signup.css";
 
-const Signup = () => {
-  return <div className="Signup">
-  <h1>Sign Up</h1>
-  <form>
-    <input type={"email"} placeholder={"Email"} />
-    <input type={"password"} placeholder={"Password"} />
-    <input type={"password"} placeholder={"Confirm Password"} />
-    <button type={"submit"}>Submit</button>
-  </form>
-</div>;
+
+class Signup extends Component {
+  /**
+   * props: {
+   *    registerUser: (email: string, pw: string) => void
+   * }
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: "",
+      password: "",
+      passwordc: ""
+    };
+
+  }
+
+  checkInput(event) {
+    event.preventDefault();
+    if (this.state.password !== this.state.passwordc) {
+      alert("passwords dont match!"); // TEMP: TODO
+    }
+    // Register the user
+    else {
+      this.props.registerUser(this.state.user, this.state.password);
+    }
+  }
+
+  render() {
+    return (<div className="Signup">
+      <h1>Sign Up</h1>
+      <form onSubmit={(event) => this.checkInput(event)}>
+        <input type={"email"} placeholder={"Email"} onChange={(e) => this.setState({ user: e.target.value })} />
+        <input type={"password"} placeholder={"Password"} onChange={(e) => this.setState({ password: e.target.value })} />
+        <input type={"password"} placeholder={"Confirm Password"} onChange={(e) => this.setState({ passwordc: e.target.value })} />
+        <button type={"submit"}>Submit</button>
+      </form>
+    </div>);
+  }
 }
 
-export default Signup
+export default Signup;

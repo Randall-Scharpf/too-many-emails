@@ -1,65 +1,125 @@
-import { Button, IconButton } from "@material-ui/core";
-import React from "react";
+import React, { Component } from "react";
+import { getFromServer, postToServer } from "./../../helper";
 import "./Sidebar.css";
-import AddIcon from "@material-ui/icons/Add";
-import InboxIcon from "@material-ui/icons/Inbox";
-import StarIcon from "@material-ui/icons/Star";
-import AccessTimeIcon from "@material-ui/icons/AccessTime";
-import LabelImportantIcon from "@material-ui/icons/LabelImportant";
-import NearMeIcon from "@material-ui/icons/NearMe";
-import NoteIcon from "@material-ui/icons/Note";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import PersonIcon from "@material-ui/icons/Person";
-import DuoIcon from "@material-ui/icons/Duo";
-import PhoneIcon from "@material-ui/icons/Phone";
 import SidebarOption from "./SidebarOption";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { openSendMessage } from "../../features/mailSlice";
 
-function Sidebar({ emails }) {
-  const dispatch = useDispatch();
 
-  return (
-    <div className="sidebar">
-      <Button
-        className="sidebar-compose"
-        onClick={() => dispatch(openSendMessage())}
-        startIcon={<AddIcon fontSize="large" />}
-      >
-        Compose
-      </Button>
-      <Link to="/" className="sidebar-link">
-        <SidebarOption
-          Icon={InboxIcon}
-          title="Inbox"
-          number={emails.length}
-          selected={true}
-        />
-      </Link>
 
-      <SidebarOption Icon={StarIcon} title="Starred" number={12} />
-      <SidebarOption Icon={AccessTimeIcon} title="Snoozed" number={9} />
-      <SidebarOption Icon={LabelImportantIcon} title="Important" number={12} />
-      <SidebarOption Icon={NearMeIcon} title="Sent" number={81} />
-      <SidebarOption Icon={NoteIcon} title="Drafts" number={5} />
-      <SidebarOption Icon={ExpandMoreIcon} title="More" />
 
-      <div className="sidebar-footer">
-        <div className="sidebar-footerIcons">
-          <IconButton>
-            <PersonIcon />
-          </IconButton>
-          <IconButton>
-            <DuoIcon />
-          </IconButton>
-          <IconButton>
-            <PhoneIcon />
-          </IconButton>
+
+class Sidebar extends Component {
+  /**
+   * props: {
+   *    user: string | null,
+   *    selectedAddress: string | null,
+   *    setAddress: (address: string | null) => void
+   * }
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      addresses: [],
+      message: ""
+    };
+  }
+
+  // This method is called immediately after a component is mounted
+  // Moving the GET request out of the constructor fixes the warning
+  // 'Can't call setState on a component that is not yet mounted.'
+  componentDidMount() {
+    getFromServer('/all-addresses', {
+      email: this.props.user
+    },
+      data => {
+        if (data.code === 200)
+          this.setState({ addresses: data.addresses });
+      });
+  }
+
+  validateAddress() {
+    return true;
+
+  }
+  handleSubmit(event) {
+    event.preventDefault();
+    const submission = this.state.message;
+
+    if (this.validateAddress()) {
+
+
+      postToServer('/address', {
+        email: this.props.user,
+        address: this.state.message
+      },
+        data => {
+          if (data.code === 400) {
+            //render error code
+            alert(data.message);
+          }
+          else {
+            const curr_addresses = this.state.addresses.slice();
+            curr_addresses.push(submission);
+            this.setState({ addresses: curr_addresses });
+          }
+        });
+
+      getFromServer('/all-addresses', {
+        email: this.props.user
+      },
+        data => {
+          if (data.code === 200) this.setState({ addresses: data.addresses });
+        });
+    }
+    else {
+      alert("invalid address")
+    }
+
+    //setErrorMessage("error")
+    //alert(`The name you entered was: ${message}`)
+    this.setState({
+      message: ""
+    });
+
+
+  }
+
+  render() {
+    return (
+      <div className="sidebar">
+        <div>
+          <h4><center>input new email:</center></h4>
         </div>
+
+
+        <form onSubmit={(event) => this.handleSubmit(event)}>
+
+          <input
+            pattern=".+@2me\.com" required
+            type="text"
+            placeholder="@2me.com"
+            id="message"
+            name="message"
+            onChange={(e) => this.setState({ message: e.target.value })}
+            value={this.state.message}
+          />
+        </form>
+
+
+        {this.state.addresses.map((address, index) => (
+          <SidebarOption
+            title={address}
+            selected={address === this.props.selectedAddress}
+            setAddress={a => this.props.setAddress(a)}
+            key={index}
+          />
+        ))}
+
+
+
+
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default Sidebar;

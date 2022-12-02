@@ -48,17 +48,17 @@ function getAddresses(
     callback: (resp) => void
 ): void {
 
-    // First get the UserID from email address
-    getUserID(email, (UserID: number | null): void => {
-        if (UserID === null) {
+    // First verify that the user is registered
+    verifyUserRegistered(email, (exists: boolean): void => {
+        if (!exists) {
             return callback({
                 code: 400,
                 message: `No user registered with email address ${email}!`
             });
         }
 
-        // Then get the addresses that are owned by that UserID
-        db.all("SELECT EmailAddress FROM Address WHERE UserID = ?", [UserID],
+        // Then get the addresses that are owned by that email
+        db.all("SELECT EmailAddress FROM Address WHERE UserEmail = ?", [email],
             (err: Error, rows: Array<{ EmailAddress: string }>) => {
                 if (err) {
                     return callback({
@@ -89,22 +89,22 @@ function addAddress(
     callback: (resp) => void
 ): void {
 
-    // First get the UserID from email address
-    getUserID(email, (UserID: number | null): void => {
-        if (UserID === null) {
+    // First verify that the user is registered
+    verifyUserRegistered(email, (exists: boolean): void => {
+        if (!exists) {
             return callback({
                 code: 400,
                 message: `No user registered with email address ${email}!`
             });
         }
 
-        // Then add an entry to the Address table referencing that UserID
+        // Then add an entry to the Address table referencing that email
         db.run(
-            "INSERT INTO Address (EmailAddress, UserID) VALUES (?, ?)",
-            [address, UserID],
+            "INSERT INTO Address (EmailAddress, UserEmail) VALUES (?, ?)",
+            [address, email],
             (err: Error) => {
                 if (err) {
-                    // Already registered
+                    // Address already taken
                     if (err.message.includes("UNIQUE constraint failed")) {
                         const message = `${address} already taken!`;
                         console.error(message);
@@ -132,49 +132,20 @@ function addAddress(
 
 
 /**
- * Helper function for getting the UserID given the unique user email address.
- * Callback is whatever code you want to run once you get the UserID. If null is
- * passed in, that means the user was not found in the database.
+ * Helper function for first verifying that a user is registered with our client
+ * by checking if their email is in our Users table, then calling the param
+ * callback with whether the user exists. If there was some error in the
+ * database operation, callback is called with false.
  */
-export function getUserID(
+export function verifyUserRegistered(
     email: string,
-    callback: (UserID: number | null) => void
+    callback: (exists: boolean) => void
 ): void {
-
-    db.get("SELECT UserID FROM Users WHERE email = ?",
-        [email],
-        (err: Error, row: { UserID: number } | undefined): void => {
-            if (err || !row) {
-                console.error(err ? err.message : `User ${email} not found`);
-                callback(null);
-            } else {
-                callback(row.UserID);
-            }
-        }
-    );
-}
-
-
-/**
- * Helper function for getting the AddressID given the unique owned email
- * address. Callback is whatever code you want to run once you get the
- * AddressID. If null is passed in, that means the address was not found in the
- * database.
- */
-export function getAddressID(
-    address: string,
-    callback: (AddressID: number | null) => void
-): void {
-
-    db.get("SELECT AddressID FROM Address WHERE EmailAddress = ?",
-        [address],
-        (err: Error, row: { AddressID: number } | undefined): void => {
-            if (err || !row) {
-                console.error(err ? err.message : `Address ${address} not found`);
-                callback(null);
-            } else {
-                callback(row.AddressID);
-            }
+    db.get("SELECT * FROM Users WHERE email = ?", [email],
+        (err: Error, row: any[] | undefined): void => {
+            if (err || row === undefined)
+                return callback(false);
+            return callback(true);
         }
     );
 }

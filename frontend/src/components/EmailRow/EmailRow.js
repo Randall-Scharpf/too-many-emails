@@ -1,47 +1,48 @@
-import { Checkbox, IconButton } from "@material-ui/core";
-import React from "react";
+import { Component } from "react";
+import { withRouter } from "react-router-dom";
 import "./EmailRow.css";
-import StarBorderOutlinedIcon from "@material-ui/icons/StarBorderOutlined";
-import LabelImportantOutlinedIcon from "@material-ui/icons/LabelImportantOutlined";
-import PlayForWorkIcon from "@material-ui/icons/PlayForWork";
-import { useHistory } from "react-router-dom";
-import { selectMail } from "../../features/mailSlice";
-import { useDispatch } from "react-redux";
 
-function EmailRow({ id, title, subject, description, time }) {
-  const history = useHistory();
-  const dispatch = useDispatch();
+class EmailRow extends Component {
+  /**
+   * props: {
+   *    email: {
+   *        from: string,
+   *        to: string[],
+   *        subject: string | null,
+   *        text: string | null
+   *    },
+   *    setSelectedMail: (email: {
+   *        from: string,
+   *        to: string[],
+   *        subject: string | null,
+   *        text: string | null
+   *    }) => void
+   * }
+   */
+  constructor(props) {
+    super(props);
+  }
 
-  const openMail = () => {
-    dispatch(
-      selectMail({
-        id,
-        title,
-        subject,
-        description,
-        time,
-      })
+  openMail() {
+    this.props.history.push("/mail");
+    this.props.setSelectedMail(this.props.email);
+  }
+
+  render() {
+    return (
+      <div onClick={() => this.openMail()} className="emailRow">
+        <div className="emailRow-options">
+
+        </div>
+        <h3 className="emailRow-title">{this.props.email?.from}</h3>
+        <div className="emailRow-message">
+          <h4>
+            {this.props.email?.subject}{" "}
+          </h4>
+        </div>
+      </div>
     );
-    history.push("/mail");
-  };
-
-  return (
-    <div onClick={openMail} className="emailRow">
-      <div className="emailRow-options">
-        <IconButton>
-          <LabelImportantOutlinedIcon />
-        </IconButton>
-      </div>
-      <h3 className="emailRow-title">{title}</h3>
-      <div className="emailRow-message">
-        <h4>
-          {subject}{" "}
-          <span className="emailRow-description"> - {description}</span>
-        </h4>
-      </div>
-      <p className="emailRow-time">{time}</p>
-    </div>
-  );
+  }
 }
 
-export default EmailRow;
+export default withRouter(EmailRow);

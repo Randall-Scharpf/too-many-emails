@@ -1,36 +1,39 @@
-import React from "react";
-import "./Header.css";
-import MenuIcon from "@material-ui/icons/Menu";
-import { Avatar, IconButton } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import AppsIcon from "@material-ui/icons/Apps";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import { useSelector, useDispatch } from "react-redux";
-import { selectUser, logout } from "../../features/userSlice";
-import { auth } from "../../firebase.js";
+import SearchIcon from "@material-ui/icons/Search";
+import React from "react";
+import { postToServer } from '../../helper';
+import "./Header.css";
 
-function Header() {
-  const user = useSelector(selectUser);
-  const dispatch = useDispatch();
+
+function Header({ user, setUser, token }) {
+
 
   const signOut = () => {
-    auth.signOut().then(() => {
-      dispatch(logout());
-    });
+    setUser(null);
+    postToServer('/logout-user', {
+      email: user,
+      token: token,
+    },
+      data => {
+        if (data.code === 400) {
+        }
+        else {
+
+        }
+      });
   };
 
   return (
     <div className="header">
-      <div className="header-left">
-        <IconButton>
-          <MenuIcon />
-        </IconButton>
-        <img
+      <div className="header-left" onClick={() => signOut()}>
+        <a>
+          <img src="/images/2ME.png" />
+          <img src="/images/2ME_Wiggly.png" />
+        </a>
+        {/* <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzRceIIBz4GgeNszaN5SupI6p1SJE_Bzgk3Q&usqp=CAU"
           alt="gmail logo"
-        />
+        /> */}
       </div>
       <div className="header-middle">
         <SearchIcon />
@@ -38,16 +41,7 @@ function Header() {
         <ArrowDropDownIcon className="header-inputCaret" />
       </div>
       <div className="header-right">
-        <IconButton>
-          <HelpOutlineIcon />
-        </IconButton>
-        <IconButton>
-          <NotificationsIcon />
-        </IconButton>
-        <IconButton>
-          <AppsIcon />
-        </IconButton>
-        <Avatar onClick={signOut} src={user?.photoUrl} />
+        <h3>{user}'s Too Many Emails</h3>
       </div>
     </div>
   );
