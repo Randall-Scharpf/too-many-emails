@@ -44,23 +44,23 @@ class Compose extends Component {
     }
     render(){
        return( 
-           <div>
-        <form>
-            <label>
+           <div className="compose_area">
+        <form className="compose_form">
+            <label className="email-form">
                 To: 
                     <input 
+                        required="required"
                         pattern = ".+@" required
-                        value={this.state.to}
                         placeholder="Recipient"
                         name="to" 
-                        type = "text"
                         goesTo={this.state.to} 
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange} 
+                        value={this.state.to}/>
             </label>
             <label>
                 Subject: 
                     <input
-                        // value={this.state.subj}
+                        required="required"
                         placeholder="Subject"
                         name="subj"
                         bodySubj={this.state.subj} 
@@ -71,11 +71,11 @@ class Compose extends Component {
             <label>
                 Essay: 
                     <textarea 
-                         value={this.state.essay}
                         placeholder="Body"
                         name="essay" 
                         essayBody={this.state.essay} 
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange} 
+                        value={this.state.essay}/>
             </label>
             </form>
             <button className="button" onClick={(event) => this.handleSend(event)} >Send</button>
