@@ -200,8 +200,8 @@ function storeEmail(
     // That way, it's not the front-end's responsibility to pass in a timestamp.
     email.timestamp = moment().format(DATE_FORMAT);;
     db.run(
-        "INSERT INTO Email (Subject, Body, SenderAddress, ReceiverAddresses, Timestamp) VALUES (?, ?, ?, ?, ?)",
-        [email.subject || null, email.text || null, email.from, email.to.join(","), email.timestamp],
+        "INSERT INTO Email (Subject, Body, SenderAddress, ReceiverAddresses) VALUES (?, ?, ?, ?)",
+        [email.subject || null, email.text || null, email.from, email.to.join(",")],
         (err: Error) => {
             if (err) {
                 console.error(err.message);

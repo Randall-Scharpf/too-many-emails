@@ -2,16 +2,8 @@
 // Sanity check for database and endpoint functionality.
 // Also serves to populate the local database file with dummy data.
 
-const moment = require("moment");
-
 const server = require("./sample-lib");
 const { DUMMY_USER } = require("./sample-lib");
-
-/**
- * Date format string for moment.format(). Documentation:
- * https://momentjs.com/docs/#/displaying/format/
- */
-const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
 
 // test endpoints: reply with what they're given
 server.getFromServer("/echo-get", { name: 'Mary Ann', job: 'Content Editor' }, console.log, console.log);
@@ -61,10 +53,6 @@ const DUMMY_EMAILS = [
         text: "sup bro"
     }
 ];
-// add the newly required timestamp attribute to all of them
-DUMMY_EMAILS.forEach(email => {
-    email.timestamp = moment().format(DATE_FORMAT);
-});
 
 /** Pretty print nested objects with JSON formatting.  */
 function prettyPrint(object) {
