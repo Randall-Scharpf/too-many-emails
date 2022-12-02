@@ -86,7 +86,11 @@ class EmailList extends Component {
   }
 
   clickCompose() {
-    this.props.setMode("compose");
+    if (this.props.address) {
+      this.props.setMode("compose");
+    } else {
+      alert("select or create new address!");
+    }
   }
 
   //
@@ -106,7 +110,7 @@ class EmailList extends Component {
       />);
     }
     else {
-      boxComponent = <Compose />;
+      boxComponent = <Compose address={this.props.address} />;
     }
 
     return (
