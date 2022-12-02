@@ -1,9 +1,21 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(45deg, rgb(236, 253, 210), rgb(186, 221, 255));
+}
+
+
+
 .compose_area{
     position: relative;
     padding: 50px 50px;
     background: rgb(213, 173, 173);
-    border-radius: 10px;
+    border-radius: 15px;
 }
-.compose_area > .compose_form{
 
 }
