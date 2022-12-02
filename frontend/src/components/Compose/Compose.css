@@ -1,4 +1,4 @@
-body{
+body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -9,13 +9,13 @@ body{
     background: linear-gradient(45deg, rgb(236, 253, 210), rgb(186, 221, 255));
 }
 
+.button:selected {
+    background-color: grey;
+}
 
-
-.compose_area{
+.compose_area {
     position: relative;
     padding: 50px 50px;
     background: rgb(213, 173, 173);
     border-radius: 15px;
 }
-
-

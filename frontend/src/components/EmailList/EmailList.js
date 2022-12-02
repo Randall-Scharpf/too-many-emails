@@ -121,16 +121,16 @@ class EmailList extends Component {
             <Section Cover="/images/Inbox_Open.png" Reveal="/images/Inbox_Closed.png" title="Inbox" color="green" />
             <p>Inbox</p>
           </button>
-          <button className="button" onClick={() => this.clickSent()}>
+          <button className="button2" onClick={() => this.clickSent()}>
             <Section Cover="/images/Outbox_Open.png" Reveal="/images/Outbox_Closed.png" title="Sent" color="orange" />
             <p>Outbox</p>
           </button>
-          <button className="button" onClick={() => this.clickCompose()}>
-            <Section Cover="/images/Outbox_Closed.png" Reveal="/images/Inbox_Open.png" title="Compose" color="pink" />
+          <button className="button3" onClick={() => this.clickCompose()}>
+            <Section Cover="/images/Compose_Open.png" Reveal="/images/Compose_Closed.png" title="Compose" color="pink" />
             <p>Compose</p>
           </button>
-          {/* <Section Icon={LocalOfferIcon} title="Promotions" color="green" /> */}
         </div>
+        <h3><center>{this.props.mode}</center></h3>
 
 
         {boxComponent}
