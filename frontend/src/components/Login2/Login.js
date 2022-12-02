@@ -22,8 +22,16 @@ class Login extends Component {
    * Update all necessary props/state as part of a successful login.
    */
   loginUser() {
-    this.props.setUser(this.state.user);
-    this.props.history.push("/"); // don't show up at /mail lol
+    if (this.state.user != '' && this.state.password != '') {
+      this.props.setUser(this.state.user);
+      this.props.history.push("/"); // don't show up at /mail lol
+      this.setState({
+        password: ''
+      });
+    }
+    else {
+      alert("Please fill out all fields.")
+    }
   }
 
   checkInput(event) {
@@ -36,6 +44,7 @@ class Login extends Component {
       data => {
         if (data.code === 200) {
           this.loginUser();
+          this.props.setToken(data.token)
         }
 
         // Determine what kind of 400 it is

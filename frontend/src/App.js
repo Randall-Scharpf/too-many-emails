@@ -16,8 +16,12 @@ class App extends Component {
       user: null,
       address: null,
       mode: "inbox",
-      selectedMail: null
+      selectedMail: null,
+      token: ''
     };
+  }
+  setToken(token) {
+    this.setState({ token })
   }
 
   setAddress(address) {
@@ -42,11 +46,17 @@ class App extends Component {
         {!this.state.user ? ( /*CHANGEBACK */
           <div>
             <Navbar />
-            <LogInContainer setUser={(user) => this.setUser(user)} />
+            <LogInContainer setUser={(user) => this.setUser(user)}
+              setToken={(token) => this.setToken(token)}
+            />
           </div>
         ) : (
           <div className="app">
-            <Header />
+            <Header
+              user={this.state.user}
+              token={this.state.token}
+              setUser={(user) => this.setUser(user)}
+            />
             <div className="app-body">
               <Sidebar
                 user={this.state.user}

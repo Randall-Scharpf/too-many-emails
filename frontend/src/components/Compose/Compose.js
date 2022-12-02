@@ -1,5 +1,7 @@
 import { Component } from "react";
-import { getFromServer, postToServer } from "../../helper";
+import { postToServer } from "../../helper";
+import "./Compose.css";
+
 
 class Compose extends Component {
     constructor(props) {

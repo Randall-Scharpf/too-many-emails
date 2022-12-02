@@ -52,7 +52,8 @@ class LogInContainer extends Component {
   render() {
     return (
       <div className="login-signup-container" ref={this.state.loginContainerRef}>
-        <Login2 setUser={(user) => this.props.setUser(user)} />
+        <Login2 setUser={(user) => this.props.setUser(user)}
+          setToken={(token) => this.props.setToken(token)} />
         <div className="side-div">
           <button type="button" onClick={() => this.handleClick()}>
             {" "}
