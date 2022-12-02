@@ -13,7 +13,7 @@ interface EmailRow {
     Body: string | null
     SenderAddress: string
     ReceiverAddresses: string
-    Timestamp: number
+    Timestamp: string
 }
 
 
@@ -82,6 +82,21 @@ export function initEmailEndpoints(server: Application): void {
 
 
 /**
+ * Helper function for converting a row representing an Email object retrieved
+ * from the database to an Email object ready to be transmitted via endpoints.
+ */
+function rowToEmail(row: EmailRow): Email {
+    return {
+        from: row.SenderAddress,
+        to: row.ReceiverAddresses.split(","),
+        subject: row.Subject,
+        text: row.Body,
+        timestamp: row.Timestamp
+    };
+}
+
+
+/**
  * Given some email address, populate the response with an array of email
  * objects representing all that address' sent emails.
  */
@@ -103,14 +118,7 @@ function getSentEmails(
             }
 
             // Convert EmailRow[] to Email[]
-            const emails = rows.map(row => {
-                return {
-                    from: row.SenderAddress,
-                    to: row.ReceiverAddresses.split(","),
-                    subject: row.Subject,
-                    text: row.Body
-                } as Email
-            })
+            const emails = rows.map(rowToEmail);
 
             // Populate response with an array of Email models
             return callback({
@@ -147,14 +155,7 @@ function getReceivedEmails(
             }
 
             // Convert EmailRow[] to Email[]
-            const emails = rows.map(row => {
-                return {
-                    from: row.SenderAddress,
-                    to: row.ReceiverAddresses.split(","),
-                    subject: row.Subject,
-                    text: row.Body
-                } as Email
-            })
+            const emails = rows.map(rowToEmail);
 
             // Populate response with an array of Email models
             return callback({
@@ -176,8 +177,8 @@ function storeEmail(
 ): void {
 
     db.run(
-        "INSERT INTO Email (Subject, Body, SenderAddress, ReceiverAddresses) VALUES (?, ?, ?, ?)",
-        [email.subject || null, email.text || null, email.from, email.to.join(",")],
+        "INSERT INTO Email (Subject, Body, SenderAddress, ReceiverAddresses, Timestamp) VALUES (?, ?, ?, ?, ?)",
+        [email.subject || null, email.text || null, email.from, email.to.join(","), email.timestamp],
         (err: Error) => {
             if (err) {
                 console.error(err.message);
@@ -189,7 +190,7 @@ function storeEmail(
             // Success
             return callback({
                 code: 200,
-                message: `Stored email from ${email.from} to ${email.to}`
+                message: `Stored email from ${email.from} to ${email.to}, sent at ${email.timestamp}`
             });
         }
     );
