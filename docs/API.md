@@ -307,7 +307,8 @@ Example response JSON:
         "nonexistent@abc123.com"
       ],
       "subject": "My Test Email",
-      "text": "hellooo how are you doing"
+      "text": "hellooo how are you doing",
+      "timestamp": "2022-11-28 28:01:55"
     },
     {
       "from": "throwaway2@lmao.com",
@@ -315,7 +316,8 @@ Example response JSON:
         "strawberry@mango.edu"
       ],
       "subject": null,
-      "text": "sup bro"
+      "text": "sup bro",
+      "timestamp": "2022-11-30 08:20:18"
     }
   ]
 }
@@ -349,7 +351,8 @@ Example response JSON:
         "throwaway3@lmao.com"
       ],
       "subject": "lol sending this to myself",
-      "text": null
+      "text": null,
+      "timestamp": "2022-11-29 13:45:40"
     }
   ]
 }
@@ -360,7 +363,7 @@ Example response JSON:
 
 Add an email object to the database.
 
-The input email object must conform to the schema defined in [schema/email.json](schema/email.jsonc).
+The input email object must conform to the schema defined in [schema/email.json](schema/email.jsonc), minus the timestamp. You don't need to supply a timestamp because the server will automatically generate the current timestamp at the time of its call.
 
 Example request body:
 
@@ -369,7 +372,7 @@ Example request body:
   "from": "throwaway2@lmao.com",
   "to": ["eggert@cs.ucla.edu", "throwaway4@lmao.com"],
   "subject": "My Test Email",
-  "text": "Hello all,\n\nThis is some dummy test. That is all.\n"
+  "text": "Hello all,\n\nThis is some dummy test. That is all.\n",
 }
 ```
 
@@ -378,6 +381,6 @@ Example response JSON:
 ```json
 {
   "code": 200,
-  "message": "Stored email from throwaway2@lmao.com to eggert@cs.ucla.edu,throwaway4@lmao.com"
+  "message": "Stored email from throwaway2@lmao.com to eggert@cs.ucla.edu,throwaway4@lmao.com, sent at 2022-11-28 08:25:17"
 }
 ```

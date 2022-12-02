@@ -27,22 +27,38 @@ class Compose extends Component {
     }
     handleSend(event) {
         event.preventDefault();
-        alert("HI" + this.state.to + this.state.subj + this.state.essay);
 
-        postToServer("/email", {
-            "from": this.props.user,
-            "to": this.state.to,
-            "subject": this.state.subj,
-            "text": this.state.essay,
+        const emailObj = {
+            "from": this.props.address,
+            "to": [this.state.to],
+            "subject": this.state.subj || null,
+            "text": this.state.essay || null,
+        };
 
-        });
+        if (!this.state.to.includes("@2me.com")) {
+            alert("invalid recipient");
+        } else {
 
-        this.setState({
-            to: '',
-            subj: '',
-            essay: ''
-        });
+
+
+            postToServer("/email", emailObj, data => {
+                alert(data.code)
+                if (data.code === 400) {
+                    //render error code
+                    alert(data.message);
+                }
+            });
+
+            this.setState({
+                to: '',
+                subj: '',
+                essay: ''
+            });
+        }
     }
+
+
+
     render() {
         return (
             <div className="compose_area">
@@ -50,7 +66,7 @@ class Compose extends Component {
                     <label className="email-form">
                         To:
                         <input
-                            pattern=".+@" required
+                            pattern=".+@2me\.com" required
                             placeholder="Recipient"
                             name="to"
                             goesTo={this.state.to}
@@ -60,7 +76,6 @@ class Compose extends Component {
                     <label>
                         Subject:
                         <input
-                            required="required"
                             placeholder="Subject"
                             name="subj"
                             bodySubj={this.state.subj}

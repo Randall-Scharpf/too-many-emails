@@ -1,3 +1,7 @@
+// sample-req.js
+// Sanity check for database and endpoint functionality.
+// Also serves to populate the local database file with dummy data.
+
 const server = require("./sample-lib");
 const { DUMMY_USER } = require("./sample-lib");
 
