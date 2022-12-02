@@ -1,4 +1,5 @@
 import {Component} from "react";
+import { postToServer } from "../../helper";
 
 class Compose extends Component {
     constructor(props){
@@ -26,6 +27,20 @@ class Compose extends Component {
     {
         event.preventDefault();
         alert("HI" + this.state.to + this.state.subj + this.state.essay);
+
+        postToServer("/email",{
+            "from": this.props.user,
+            "to": this.state.to,
+            "subject": this.state.subj,
+            "text": this.state.essay,
+
+        });
+       
+        this.setState({
+            to:'',
+            subj:'',
+            essay:''
+        });
     }
     render(){
        return( 
