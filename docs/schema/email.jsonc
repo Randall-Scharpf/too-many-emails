@@ -25,5 +25,11 @@
    *
    * Body of the email, in plain text. null if none included.
    */
-  "text": "Dear all,\n\nThis is an email I'm sending to inform you that I missed my COM SCI exam this morning.\n\nWould it be possible to arrange a make-up?\n\nThanks,\nJoe Bruin\n"
+  "text": "Dear all,\n\nThis is an email I'm sending to inform you that I missed my COM SCI exam this morning.\n\nWould it be possible to arrange a make-up?\n\nThanks,\nJoe Bruin\n",
+  /**
+   * string
+   *
+   * Timestamp of the email transmission, in the format "YYYY-MM-DD HH:MM:SS".
+   */
+  "timestamp": "2022-12-01 05:45:27"
 }

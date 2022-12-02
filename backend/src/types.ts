@@ -19,5 +19,10 @@ export interface Email {
     /**
      * Optional body of the email, in plain text.
      */
-    text?: string
+    text?: string,
+
+    /**
+     * Timestamp of the email transmission, in the format "YYYY-MM-DD HH:MM:SS".
+     */
+    timestamp: string
 }
