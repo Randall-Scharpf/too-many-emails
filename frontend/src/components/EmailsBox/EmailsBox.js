@@ -34,14 +34,6 @@ class EmailsBox extends Component {
           key={index}
         />
       ))}
-      <EmailRow
-        email={{
-          from: "Twitch",
-          suject: "Hey fellow streamer!!"
-        }}
-        setSelectedMail={(email) => this.props.setSelectedMail(email)}
-        key={-1}
-      />
     </div>);
   }
 }
