@@ -90,13 +90,16 @@ class Sidebar extends Component {
   render() {
     return (
       <div className="sidebar">
-        <Button
+        {/* <Button
           className="sidebar-compose"
           onClick={() => openSendMessage()}
           startIcon={<AddIcon fontSize="large" />}
         >
           Compose
-        </Button>
+        </Button> */}
+        <div>
+          <h4><center>input new email:</center></h4>
+        </div>
 
 
         <form onSubmit={(event) => this.handleSubmit(event)}>

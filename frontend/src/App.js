@@ -39,7 +39,7 @@ class App extends Component {
   render() {
     return (
       <div className="root">
-        {!this.state.user ? (
+        {!this.state.user ? ( /*CHANGEBACK */
           <div>
             <Navbar />
             <LogInContainer setUser={(user) => this.setUser(user)} />
