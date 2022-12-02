@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from "react-router-dom";
 import { postToServer } from '../../helper';
 import "./Login.css";
-
 
 
 class Login extends Component {
@@ -18,6 +18,14 @@ class Login extends Component {
     };
   }
 
+  /**
+   * Update all necessary props/state as part of a successful login.
+   */
+  loginUser() {
+    this.props.setUser(this.state.user);
+    this.props.history.push("/"); // don't show up at /mail lol
+  }
+
   checkInput(event) {
     event.preventDefault();
 
@@ -27,14 +35,14 @@ class Login extends Component {
     },
       data => {
         if (data.code === 200) {
-          this.props.setUser(this.state.user);
+          this.loginUser();
         }
 
         // Determine what kind of 400 it is
         else if (data.code === 400) {
           // Honestly just let the user pass anyway lol
           if (data.token === "Already logged in!") {
-            this.props.setUser(this.state.user);
+            this.loginUser();
           }
           else if (data.token === "Email/Password combination invalid!") {
             alert("Your email and/or password is incorrect!");
@@ -61,4 +69,4 @@ class Login extends Component {
   }
 }
 
-export default Login
+export default withRouter(Login);

@@ -1,22 +1,53 @@
-import { Component } from "react";
+import { IconButton } from "@material-ui/core";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import "./Mail.css";
 
-class Mail extends Component {
-    constructor({ from, to, subject, text }) {
-        super();
-        this.props = { from, to, subject, text };
-    }
 
-    render() {
-        return (
-            <div>
-                <h1>{this.props.subject}</h1>
-                <h2>From: {this.props.from} </h2>
-                <h2>To: {this.props.to.join("; ")}</h2>
-                <p>{this.props.text}</p>
+class Mail extends Component {
+  /**
+   * props: {
+   *    selectedMail: {
+   *        from: string,
+   *        to: string[],
+   *        subject: string | null,
+   *        text: string | null
+   *    } | null
+   * }
+   */
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="mail">
+        <div className="mail-tools">
+          <div className="mail-toolsLeft">
+            <IconButton onClick={() => this.props.history.push("/")}>
+              <ArrowBackIcon />
+            </IconButton>
+          </div>
+        </div>
+        <div className="mail-body">
+          <div className="mail-bodyHeader">
+            <div className="mail-subject">
+              <h2>{this.props.selectedMail?.subject}</h2>
             </div>
-        );
-    }
+            <p className="mail-time">{this.props.selectedMail?.time}</p>
+          </div>
+          <div className="mail-participants">
+            <p><strong>FROM: </strong>{this.props.selectedMail?.from}</p>
+            <p><strong>TO: </strong>{this.props.selectedMail?.to.join("; ")}</p>
+          </div>
+          <div className="mail-message">
+            <p>{this.props.selectedMail?.text}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
-export default Mail;
+export default withRouter(Mail);
