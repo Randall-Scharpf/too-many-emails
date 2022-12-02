@@ -1,6 +1,4 @@
 .sidebar {
-    flex: 0.3;
-    max-width: 300px;
     padding-right: 20px;
 }
 
@@ -9,16 +7,16 @@
     justify-content: center;
 }
 
-.sidebar-link{
+.sidebar-link {
     text-decoration: none;
 }
 
 @media only screen and (max-width: 500px) {
-    .sidebar-footerIcons > .MuiIconButton-root{
-       padding: 1px !important;
+    .sidebar-footerIcons>.MuiIconButton-root {
+        padding: 1px !important;
     }
 
-    .sidebar-compose{
+    .sidebar-compose {
         margin-left: 3px !important;
         padding: 10px 8px !important;
     }
