@@ -42,8 +42,6 @@ cd too-many-emails
 
 ```shell
 cd backend
-npm install
-npx tsc
 # TODO: RUN A SCRIPT TO GIVE US DEMO-READY DUMMY DATA
 npm start
 ```

@@ -28,7 +28,6 @@ First make sure your branch is up-to-date. To start the server, set aside one sh
 
 ```powershell
 cd backend
-npx tsc
 npm start
 ```
 
@@ -48,6 +47,7 @@ You can then run your front-end React app like you normally would, in a separate
 
 ```powershell
 cd frontend
+npm install
 npm start
 ```
 
